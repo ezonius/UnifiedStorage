@@ -1,0 +1,12 @@
+{
+  "required": true,
+  "package": "ezonius.unifiedstorage.mixin",
+  "compatibilityLevel": "JAVA_11",
+  "mixins": [
+  ],
+  "client": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
