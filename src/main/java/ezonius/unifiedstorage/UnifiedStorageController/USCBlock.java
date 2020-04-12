@@ -1,12 +1,15 @@
 package ezonius.unifiedstorage.UnifiedStorageController;
 
-import net.minecraft.block.BlockState;
-import net.minecraft.block.BlockWithEntity;
-import net.minecraft.block.FacingBlock;
+import net.fabricmc.fabric.api.block.FabricBlockSettings;
+import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.entity.EntityContext;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Inventory;
+import net.minecraft.state.StateManager;
+import net.minecraft.state.property.DirectionProperty;
 import net.minecraft.state.property.EnumProperty;
+import net.minecraft.state.property.Properties;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.Hand;
@@ -14,29 +17,41 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.shape.VoxelShape;
+import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 
 import java.util.Objects;
 
 public class USCBlock extends BlockWithEntity {
-    public static final EnumProperty<Direction> FACING;
-    public static final Identifier CONTENTS;
+    public static final DirectionProperty FACING = Properties.FACING;
+    public static final Identifier CONTENTS = new Identifier("contents");
     private final DyeColor color = DyeColor.BLACK;
 
-    public USCBlock(Settings settings) {
-        super(settings);
-        this.setDefaultState(this.stateManager.getDefaultState().with(FACING, Direction.UP));
+    public USCBlock() {
+        super(FabricBlockSettings.of(Material.SHULKER_BOX).build());
+        setDefaultState(getDefaultState().with(FACING, Direction.UP));
     }
 
-    static {
-        FACING = FacingBlock.FACING;
-        CONTENTS = new Identifier("contents");
+    @Override
+    protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
+        builder.add(Properties.FACING);
     }
 
     @Override
     public BlockEntity createBlockEntity(BlockView view) {
         return new USCBlockEntity();
+    }
+
+    @Override
+    public BlockRenderType getRenderType(BlockState state) {
+        return BlockRenderType.MODEL;
+    }
+
+    @Override
+    public VoxelShape getOutlineShape(BlockState state, BlockView view, BlockPos pos, EntityContext ctx) {
+        return VoxelShapes.fullCube();
     }
 
     @Override

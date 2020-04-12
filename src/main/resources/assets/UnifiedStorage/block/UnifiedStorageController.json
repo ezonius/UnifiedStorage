@@ -1,6 +1,0 @@
-{
-  "parent": "item/template_shulker_box",
-  "textures": {
-    "all": "block/black_shulker_box"
-  }
-}

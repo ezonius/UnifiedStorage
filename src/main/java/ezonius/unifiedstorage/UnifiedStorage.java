@@ -11,21 +11,23 @@ import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
+import net.minecraft.util.DyeColor;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
 public class UnifiedStorage implements ModInitializer {
     public static final String MODGROUP = "unifiedstorage";
-    public static final Block UNIFIED_STORAGE_CONTROLLER_BLOCK = new USCBlock(FabricBlockSettings.of(Material.SHULKER_BOX, MaterialColor.PURPLE_TERRACOTTA).build());
-    public static final BlockItem UNIFIED_STORAGE_CONTROLLER_ITEM = new BlockItem(UNIFIED_STORAGE_CONTROLLER_BLOCK, new Item.Settings().group(ItemGroup.REDSTONE));
-    public static BlockEntityType<USCBlockEntity> UNIFIED_STORAGE_CONTROLLER_BLOCK_ENTITY;
+    public static final String USC_ID = "unifiedstoragecontroller";
+    public static final Block USC_BLOCK = new USCBlock();
+    public static final BlockItem USC_ITEM = new BlockItem(USC_BLOCK, new Item.Settings().group(ItemGroup.REDSTONE));
+    public static BlockEntityType<USCBlockEntity> USC_BLOCK_ENTITY;
     @Override
     public void onInitialize() {
-        Registry.register(Registry.BLOCK, new Identifier(MODGROUP, "unifiedstoragecontroller"), UNIFIED_STORAGE_CONTROLLER_BLOCK);
-        Registry.register(Registry.ITEM, new Identifier(MODGROUP, "unifiedstoragecontroller"), UNIFIED_STORAGE_CONTROLLER_ITEM);
-        UNIFIED_STORAGE_CONTROLLER_BLOCK_ENTITY = Registry.register(Registry.BLOCK_ENTITY_TYPE,
-                MODGROUP + ":unifiedstoragecontroller",
-                BlockEntityType.Builder.create(() -> new USCBlockEntity(),
-                        UNIFIED_STORAGE_CONTROLLER_BLOCK).build(null));
+        Registry.register(Registry.BLOCK, new Identifier(MODGROUP, USC_ID), USC_BLOCK);
+        Registry.register(Registry.ITEM, new Identifier(MODGROUP, USC_ID), USC_ITEM);
+        USC_BLOCK_ENTITY = Registry.register(Registry.BLOCK_ENTITY_TYPE,
+                MODGROUP + ":" + USC_ID,
+                BlockEntityType.Builder.create(USCBlockEntity::new,
+                        USC_BLOCK).build(null));
     }
 }

@@ -16,7 +16,7 @@ public class USCBlockEntity extends BlockEntity implements USCImplementedInvento
     private final DefaultedList<ItemStack> items = DefaultedList.ofSize(2, ItemStack.EMPTY);
 
     public USCBlockEntity() {
-        super(UnifiedStorage.UNIFIED_STORAGE_CONTROLLER_BLOCK_ENTITY);
+        super(UnifiedStorage.USC_BLOCK_ENTITY);
     }
 
     @Override

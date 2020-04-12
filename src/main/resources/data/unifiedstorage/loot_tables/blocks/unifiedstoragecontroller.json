@@ -6,7 +6,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "UnifiedStorage:UnifiedStorageController"
+          "name": "unifiedstorage:unifiedstoragecontroller"
         }
       ],
       "conditions": [
