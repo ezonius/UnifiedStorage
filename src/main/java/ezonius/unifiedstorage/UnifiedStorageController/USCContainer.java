@@ -13,7 +13,6 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
 public class USCContainer extends Container {
-    public static final Identifier ID = new Identifier(UnifiedStorage.MODGROUP, UnifiedStorage.USC_ID + "_container");
     private final Inventory inventory;
     private static final int INV_COLUMNS = 9;
     private static final int INV_ROWS = 6;

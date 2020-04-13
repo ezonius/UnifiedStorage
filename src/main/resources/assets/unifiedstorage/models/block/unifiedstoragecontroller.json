@@ -1,6 +1,5 @@
 {
   "parent": "block/cube_all",
-  "ambientocclusion": false,
   "textures": {
     "all": "unifiedstorage:block/unifiedstoragecontroller"
   }

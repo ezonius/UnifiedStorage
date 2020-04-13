@@ -10,7 +10,6 @@ import net.minecraft.util.Identifier;
 import java.util.Objects;
 
 public class USCScreen extends ContainerScreen<USCContainer> {
-    public static final Identifier ID = new Identifier(UnifiedStorage.MODGROUP, UnifiedStorage.USC_ID + "_screen");
     // a path to gui texture, you may replace it with new Identifier(YourMod.MOD_ID, "textures/gui/container/your_container.png");
     private static final Identifier TEXTURE = new Identifier("textures/gui/container/creative_inventory/tab_item_search.png");
 

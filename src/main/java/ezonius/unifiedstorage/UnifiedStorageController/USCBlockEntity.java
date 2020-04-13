@@ -41,7 +41,6 @@ import java.util.Objects;
 import java.util.stream.IntStream;
 
 public class USCBlockEntity extends LootableContainerBlockEntity implements SidedInventory, Tickable {
-    public static final Identifier ID = new Identifier(UnifiedStorage.MODGROUP, UnifiedStorage.USC_ID + "_block_entity");
     private static final int[] AVAILABLE_SLOTS = IntStream.range(0, 54).toArray();
     private DefaultedList<ItemStack> inventory;
     private int viewerCount;
@@ -52,7 +51,7 @@ public class USCBlockEntity extends LootableContainerBlockEntity implements Side
     private boolean cachedColorUpdateNeeded;
 
     public USCBlockEntity(DyeColor dyecolor) {
-        super(UnifiedStorage.USC_BLOCK_ENTITY);
+        super(USCModule.USC_BLOCK_ENTITY);
         this.inventory = DefaultedList.ofSize(54, ItemStack.EMPTY);
         this.animationStage = USCBlockEntity.AnimationStage.CLOSED;
         this.cachedColor = dyecolor;

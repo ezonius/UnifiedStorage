@@ -17,6 +17,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Inventories;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.loot.context.LootContext;
@@ -46,10 +47,10 @@ import java.util.List;
 import java.util.Objects;
 
 public class USCBlock extends BlockWithEntity {
-    public static final Identifier ID = new Identifier(UnifiedStorage.MODGROUP, UnifiedStorage.USC_ID);
+    public static final Identifier ID = new Identifier(USCModule.MODGROUP, USCModule.USC_ID);
     public static final EnumProperty<Direction> FACING = FacingBlock.FACING;
     public static final Identifier CONTENTS = new Identifier("contents");
-    private final DyeColor color = UnifiedStorage.USC_COLOR;
+    private final DyeColor color = USCModule.USC_COLOR;
 
     public USCBlock() {
         super(FabricBlockSettings.of(Material.SHULKER_BOX).strength(2.0F, 0.0F).dynamicBounds().build());
@@ -268,7 +269,7 @@ public class USCBlock extends BlockWithEntity {
     }
 
     public static Block get(DyeColor dyeColor) {
-        return UnifiedStorage.USC_BLOCK;
+        return USCModule.USC_BLOCK;
 //        if (dyeColor == null) {
 //            return Blocks.SHULKER_BOX;
 //        } else {
