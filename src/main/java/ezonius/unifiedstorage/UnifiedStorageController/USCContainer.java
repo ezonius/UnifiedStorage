@@ -1,16 +1,11 @@
 package ezonius.unifiedstorage.UnifiedStorageController;
 
-import ezonius.unifiedstorage.UnifiedStorage;
 import net.minecraft.container.Container;
-import net.minecraft.container.ContainerType;
-import net.minecraft.container.GenericContainer;
 import net.minecraft.container.Slot;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
 
 public class USCContainer extends Container {
     private final Inventory inventory;
