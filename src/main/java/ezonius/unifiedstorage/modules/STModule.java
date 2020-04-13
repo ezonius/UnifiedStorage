@@ -1,4 +1,4 @@
-package ezonius.unifiedstorage.storageterminal;
+package ezonius.unifiedstorage.modules;
 
 import ezonius.unifiedstorage.init.InitModule;
 

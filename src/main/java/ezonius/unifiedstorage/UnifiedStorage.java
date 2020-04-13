@@ -1,6 +1,6 @@
 package ezonius.unifiedstorage;
 
-import ezonius.unifiedstorage.UnifiedStorageController.USCModule;
+import ezonius.unifiedstorage.modules.USCModule;
 import net.fabricmc.api.ModInitializer;
 
 public class UnifiedStorage implements ModInitializer {

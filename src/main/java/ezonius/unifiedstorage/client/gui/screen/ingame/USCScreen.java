@@ -1,7 +1,7 @@
-package ezonius.unifiedstorage.UnifiedStorageController;
+package ezonius.unifiedstorage.client.gui.screen.ingame;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import ezonius.unifiedstorage.UnifiedStorage;
+import ezonius.unifiedstorage.container.USCContainer;
 import net.minecraft.client.gui.screen.ingame.ContainerScreen;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.text.Text;

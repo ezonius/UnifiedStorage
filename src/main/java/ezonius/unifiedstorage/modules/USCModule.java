@@ -1,5 +1,11 @@
-package ezonius.unifiedstorage.UnifiedStorageController;
+package ezonius.unifiedstorage.modules;
 
+import ezonius.unifiedstorage.client.gui.screen.ingame.USCScreen;
+import ezonius.unifiedstorage.block.USCBlock;
+import ezonius.unifiedstorage.block.entity.USCBlockEntity;
+import ezonius.unifiedstorage.client.render.block.entity.USCBlockEntityRenderer;
+import ezonius.unifiedstorage.client.render.entity.model.USCEntityModel;
+import ezonius.unifiedstorage.container.USCContainer;
 import ezonius.unifiedstorage.init.InitModule;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;

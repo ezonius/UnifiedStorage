@@ -1,4 +1,4 @@
-package ezonius.unifiedstorage.UnifiedStorageController;
+package ezonius.unifiedstorage.container;
 
 import net.minecraft.container.Container;
 import net.minecraft.container.Slot;

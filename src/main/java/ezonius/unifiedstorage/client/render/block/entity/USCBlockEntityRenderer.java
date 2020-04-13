@@ -1,10 +1,11 @@
-package ezonius.unifiedstorage.UnifiedStorageController;
+package ezonius.unifiedstorage.client.render.block.entity;
 
+import ezonius.unifiedstorage.client.render.entity.model.USCEntityModel;
+import ezonius.unifiedstorage.block.USCBlock;
+import ezonius.unifiedstorage.block.entity.USCBlockEntity;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.ShulkerBoxBlock;
-import net.minecraft.block.entity.ShulkerBoxBlockEntity;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.TexturedRenderLayers;
 import net.minecraft.client.render.VertexConsumer;

@@ -1,6 +1,6 @@
 package ezonius.unifiedstorage;
 
-import ezonius.unifiedstorage.UnifiedStorageController.USCModule;
+import ezonius.unifiedstorage.modules.USCModule;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;

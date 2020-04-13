@@ -1,4 +1,4 @@
-package ezonius.unifiedstorage.UnifiedStorageController;
+package ezonius.unifiedstorage.client.render.entity.model;
 
 import com.google.common.collect.ImmutableList;
 import net.fabricmc.api.EnvType;

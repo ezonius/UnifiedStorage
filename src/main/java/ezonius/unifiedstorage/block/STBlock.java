@@ -1,4 +1,4 @@
-package ezonius.unifiedstorage.storageterminal;
+package ezonius.unifiedstorage.block;
 
 import net.minecraft.block.BarrelBlock;
 
