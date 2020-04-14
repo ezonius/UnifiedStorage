@@ -1,6 +1,7 @@
 package ezonius.unifiedstorage.block.entity;
 
 import ezonius.unifiedstorage.container.USCContainer;
+import ezonius.unifiedstorage.inventory.ImplementedInventory;
 import ezonius.unifiedstorage.modules.USCModule;
 import ezonius.unifiedstorage.block.USCBlock;
 import net.fabricmc.api.EnvType;
@@ -44,7 +45,7 @@ public class USCBlockEntity extends LootableContainerBlockEntity implements Side
     private boolean cachedColorUpdateNeeded;
 
     public USCBlockEntity(DyeColor dyecolor) {
-        super(USCModule.USC_BLOCK_ENTITY);
+        super(USCModule.USC_BLOCK_ENTITY_TYPE);
         this.inventory = DefaultedList.ofSize(54, ItemStack.EMPTY);
         this.animationStage = USCBlockEntity.AnimationStage.CLOSED;
         this.cachedColor = dyecolor;
@@ -294,6 +295,11 @@ public class USCBlockEntity extends LootableContainerBlockEntity implements Side
     protected Container createContainer(int i, PlayerInventory playerInventory) {
         //return new ShulkerBoxContainer(i, playerInventory, this);
         return new USCContainer(i, playerInventory, this);
+    }
+
+    @Override
+    public boolean canPlayerUseInv(PlayerEntity player) {
+        return pos.isWithinDistance(player.getBlockPos(), 4.5);
     }
 
     public enum AnimationStage {

@@ -1,8 +1,9 @@
 {
   "required": true,
-  "package": "ezonius.unifiedstorage.mixin",
+  "package": "ezonius.unifiedstorage.mixins",
   "compatibilityLevel": "JAVA_11",
   "mixins": [
+    "SlotMixin"
   ],
   "client": [
   ],

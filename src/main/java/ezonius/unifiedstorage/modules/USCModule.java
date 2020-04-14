@@ -1,5 +1,6 @@
 package ezonius.unifiedstorage.modules;
 
+import ezonius.unifiedstorage.UnifiedStorage;
 import ezonius.unifiedstorage.client.gui.screen.ingame.USCScreen;
 import ezonius.unifiedstorage.block.USCBlock;
 import ezonius.unifiedstorage.block.entity.USCBlockEntity;
@@ -29,20 +30,20 @@ import net.minecraft.world.World;
 import java.util.Objects;
 
 public class USCModule implements InitModule {
-    public static final String MODGROUP = "unifiedstorage";
+    public static final String MODGROUP = UnifiedStorage.MODNAME;
     public static final String USC_ID = "unifiedstoragecontroller";
     public static final DyeColor USC_COLOR = DyeColor.BLACK;
     public static final Block USC_BLOCK = new USCBlock();
     public static final BlockItem USC_ITEM = new BlockItem(USC_BLOCK, new Item.Settings().group(ItemGroup.DECORATIONS));
 
-    public static BlockEntityType<USCBlockEntity> USC_BLOCK_ENTITY;
+    public static BlockEntityType<USCBlockEntity> USC_BLOCK_ENTITY_TYPE;
     public static final String USC_CONTAINER_TRANSLATION_KEY = Util.createTranslationKey("container", USCBlock.ID);
 
     @Override
     public void initCommon() {
         Registry.register(Registry.BLOCK, USCBlock.ID, USC_BLOCK);
         Registry.register(Registry.ITEM, USCBlock.ID, USC_ITEM);
-        USC_BLOCK_ENTITY = Registry.register(Registry.BLOCK_ENTITY_TYPE,
+        USC_BLOCK_ENTITY_TYPE = Registry.register(Registry.BLOCK_ENTITY_TYPE,
                 USCBlock.ID,
                 BlockEntityType.Builder.create(() -> new USCBlockEntity(USC_COLOR),
                         USC_BLOCK).build(null));
@@ -63,6 +64,6 @@ public class USCModule implements InitModule {
     @Environment(EnvType.CLIENT)
     public void initClient() {
         ScreenProviderRegistry.INSTANCE.<USCContainer>registerFactory(USCBlock.ID, (container) -> new USCScreen(container, MinecraftClient.getInstance().player != null ? MinecraftClient.getInstance().player.inventory : null, new TranslatableText(USC_CONTAINER_TRANSLATION_KEY)));
-        BlockEntityRendererRegistry.INSTANCE.register(USC_BLOCK_ENTITY, (dispatcher) -> new USCBlockEntityRenderer(new USCEntityModel<>(), dispatcher));
+        BlockEntityRendererRegistry.INSTANCE.register(USC_BLOCK_ENTITY_TYPE, (dispatcher) -> new USCBlockEntityRenderer(new USCEntityModel<>(), dispatcher));
     }
 }
