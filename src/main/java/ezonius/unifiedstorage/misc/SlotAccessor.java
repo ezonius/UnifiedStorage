@@ -24,4 +24,6 @@ public interface SlotAccessor
      * @param y The new Y position
      */
     void setY(int y);
+
+    int getInvSlot();
 }
