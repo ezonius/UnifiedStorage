@@ -114,7 +114,7 @@ public class STBlockEntity extends LootableContainerBlockEntity {
         return getRecursiveAdjacentEntities(this.asSingletonHashSet())
                 .map(STBlockEntity::getInvSize)
                 .reduce(Integer::sum)
-                .orElse(108);
+                .orElse(INV_SIZE);
     }
 
 
