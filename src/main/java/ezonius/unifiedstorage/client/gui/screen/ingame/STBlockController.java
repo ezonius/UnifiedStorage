@@ -18,6 +18,7 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.recipe.RecipeType;
+import net.minecraft.text.TranslatableText;
 
 import java.util.ArrayList;
 import java.util.Set;
@@ -42,7 +43,7 @@ public class STBlockController extends CottonCraftingController {
         setRootPanel(root);
 
         // Title
-        WDynamicLabel dynamicLabel = new WDynamicLabel(() -> "Storage Terminal");
+        WDynamicLabel dynamicLabel = new WDynamicLabel(() -> new TranslatableText("container.unifiedstorage.storageterminal").asString());
         root.add(dynamicLabel, 0, titleY);
 
         // Scrollable Inventory
