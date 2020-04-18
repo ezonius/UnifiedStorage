@@ -1,16 +1,12 @@
 package ezonius.unifiedstorage.block.entity;
 
 import ezonius.unifiedstorage.block.STBlock;
-import ezonius.unifiedstorage.inventory.ImplementedInventory;
 import ezonius.unifiedstorage.modules.STModule;
-import net.minecraft.block.BarrelBlock;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.ChestBlockEntity;
 import net.minecraft.block.entity.LootableContainerBlockEntity;
 import net.minecraft.container.Container;
-import net.minecraft.container.GenericContainer;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventories;
@@ -24,27 +20,38 @@ import net.minecraft.text.TranslatableText;
 import net.minecraft.util.DefaultedList;
 import net.minecraft.util.math.Vec3i;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.stream.Stream;
 
-public class STBlockEntity extends LootableContainerBlockEntity implements ImplementedInventory {
+public class STBlockEntity extends LootableContainerBlockEntity {
 
     private DefaultedList<ItemStack> inventory;
     private int viewerCount;
+    public static int INV_SIZE = 108;
+    public static int MAX_STACK_AMOUNT = 64;
 
     public STBlockEntity() {
         super(STModule.ST_BLOCK_ENTITY_TYPE);
-        this.inventory = DefaultedList.ofSize(108, ItemStack.EMPTY);
+        this.inventory = DefaultedList.ofSize(INV_SIZE, ItemStack.EMPTY);
     }
 
+    public HashSet<STBlockEntity> asSingletonHashSet() {
+        return new HashSet<>(Arrays.asList(this));
+    }
+
+    @Override
     public CompoundTag toTag(CompoundTag tag) {
         super.toTag(tag);
         if (!this.serializeLootTable(tag)) {
             Inventories.toTag(tag, this.inventory);
         }
-
         return tag;
     }
 
+    @Override
     public void fromTag(CompoundTag tag) {
         super.fromTag(tag);
         this.inventory = DefaultedList.ofSize(this.getInvSize(), ItemStack.EMPTY);
@@ -54,23 +61,95 @@ public class STBlockEntity extends LootableContainerBlockEntity implements Imple
 
     }
 
-    @Override
     public DefaultedList<ItemStack> getItems() {
         return inventory;
     }
 
+    @Override
     public int getInvSize() {
-        return 108;
+        return inventory.size();
     }
 
+    private Stream<STBlockEntity> getAdjacentInventories() {
+        var adjacentEntities = new ArrayList<BlockEntity>();
+        if (this.world != null) {
+            adjacentEntities.add(this.world.getBlockEntity(this.pos.down()));
+            adjacentEntities.add(this.world.getBlockEntity(this.pos.up()));
+            adjacentEntities.add(this.world.getBlockEntity(this.pos.north()));
+            adjacentEntities.add(this.world.getBlockEntity(this.pos.south()));
+            adjacentEntities.add(this.world.getBlockEntity(this.pos.east()));
+            adjacentEntities.add(this.world.getBlockEntity(this.pos.west()));
+        }
+        return adjacentEntities.stream()
+                .filter((entry) -> entry instanceof STBlockEntity)
+                .map(entry -> ((STBlockEntity) entry))
+                .distinct();
+    }
+
+    public Stream<STBlockEntity> getRecursiveAdjacentEntities(HashSet<STBlockEntity> checkList) {
+        HashSet<STBlockEntity> finalCheckList = Objects.requireNonNullElseGet(checkList, HashSet::new);
+        var filteredAdjacent = getAdjacentInventories()
+                .filter(entry -> {
+                    if (!finalCheckList.contains(entry)) {
+                        finalCheckList.add(entry);
+                        return true;
+                    }
+                    return false;
+                });
+        return Stream.concat(
+                Stream.of(this),
+                filteredAdjacent
+                        .flatMap(stBlockEntity -> stBlockEntity.getRecursiveAdjacentEntities(finalCheckList)));
+    }
+
+    public DefaultedList<ItemStack> getAllConnectedInventories() {
+        DefaultedList<ItemStack> defaultedList = DefaultedList.of();
+        getRecursiveAdjacentEntities(this.asSingletonHashSet())
+                .map((entry) -> entry.inventory)
+                .forEach(defaultedList::addAll);
+        return defaultedList;
+    }
+
+    public Integer getAllConnectedInvSize() {
+        return getRecursiveAdjacentEntities(this.asSingletonHashSet())
+                .map(STBlockEntity::getInvSize)
+                .reduce(Integer::sum)
+                .orElse(108);
+    }
+
+
+
+    @Override
     protected DefaultedList<ItemStack> getInvStackList() {
         return this.inventory;
     }
 
+    @Override
     protected void setInvStackList(DefaultedList<ItemStack> list) {
         this.inventory = list;
     }
 
+    @Override
+    public void setInvStack(int slot, ItemStack stack) {
+        super.setInvStack(slot, stack);
+    }
+
+    @Override
+    public ItemStack takeInvStack(int slot, int amount) {
+        return super.takeInvStack(slot, amount);
+    }
+
+    @Override
+    public ItemStack getInvStack(int slot) {
+        return super.getInvStack(slot);
+    }
+
+    @Override
+    public ItemStack removeInvStack(int slot) {
+        return super.removeInvStack(slot);
+    }
+
+    @Override
     protected Text getContainerName() {
         return new TranslatableText("container.storageterminal");
     }
@@ -80,6 +159,7 @@ public class STBlockEntity extends LootableContainerBlockEntity implements Imple
         return null;
     }
 
+    @Override
     public void onInvOpen(PlayerEntity player) {
         if (!player.isSpectator()) {
             if (this.viewerCount < 0) {
@@ -88,7 +168,7 @@ public class STBlockEntity extends LootableContainerBlockEntity implements Imple
 
             ++this.viewerCount;
             BlockState blockState = this.getCachedState();
-            boolean bl = blockState.get(BarrelBlock.OPEN);
+            boolean bl = blockState.get(STBlock.OPEN);
             if (!bl) {
                 this.playSound(blockState, SoundEvents.BLOCK_BARREL_OPEN);
                 this.setOpen(blockState, true);
@@ -99,7 +179,7 @@ public class STBlockEntity extends LootableContainerBlockEntity implements Imple
 
     }
 
-    private void scheduleUpdate() {
+    public void scheduleUpdate() {
         Objects.requireNonNull(this.world).getBlockTickScheduler().schedule(this.getPos(), this.getCachedState().getBlock(), 5);
     }
 
@@ -112,7 +192,7 @@ public class STBlockEntity extends LootableContainerBlockEntity implements Imple
             this.scheduleUpdate();
         } else {
             BlockState blockState = this.getCachedState();
-            if (blockState.getBlock() != Blocks.BARREL) {
+            if (blockState.getBlock() != STModule.ST_BLOCK) {
                 this.markRemoved();
                 return;
             }
@@ -126,11 +206,11 @@ public class STBlockEntity extends LootableContainerBlockEntity implements Imple
 
     }
 
+    @Override
     public void onInvClose(PlayerEntity player) {
         if (!player.isSpectator()) {
             --this.viewerCount;
         }
-
     }
 
     private void setOpen(BlockState state, boolean open) {
@@ -149,4 +229,11 @@ public class STBlockEntity extends LootableContainerBlockEntity implements Imple
     public boolean canPlayerUseInv(PlayerEntity player) {
         return pos.isWithinDistance(player.getBlockPos(), 4.5);
     }
+
+    @Override
+    public int getInvMaxStackAmount() {
+        return STBlockEntity.MAX_STACK_AMOUNT;
+    }
+
+
 }

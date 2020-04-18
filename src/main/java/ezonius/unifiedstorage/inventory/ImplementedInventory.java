@@ -1,10 +1,20 @@
 package ezonius.unifiedstorage.inventory;
 
+import net.minecraft.block.BlockState;
+import net.minecraft.block.InventoryProvider;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Inventories;
 import net.minecraft.inventory.Inventory;
+import net.minecraft.inventory.SidedInventory;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DefaultedList;
+import net.minecraft.util.Tickable;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
+import net.minecraft.world.IWorld;
+
+import java.util.Set;
 
 /**
  * A simple {@code Inventory} implementation with only default methods + an item list getter.
@@ -102,11 +112,54 @@ public interface ImplementedInventory extends Inventory {
     default void markDirty() {
         // Override if you want behavior.
     }
+
     @Override
     default boolean canPlayerUseInv(PlayerEntity player) {
         return true;
     }
 
+    @Override
+    default void onInvOpen(PlayerEntity player) {
+    }
 
+    @Override
+    default void onInvClose(PlayerEntity player) {
+    }
+
+    @Override
+    default int getInvMaxStackAmount() {
+        return 64;
+    }
+
+    @Override
+    default boolean isValidInvStack(int slot, ItemStack stack) {
+        return true;
+    }
+
+    @Override
+    default int countInInv(Item item) {
+        int i = 0;
+
+        for(int j = 0; j < this.getInvSize(); ++j) {
+            ItemStack itemStack = this.getInvStack(j);
+            if (itemStack.getItem().equals(item)) {
+                i += itemStack.getCount();
+            }
+        }
+
+        return i;
+    }
+
+    @Override
+    default boolean containsAnyInInv(Set<Item> items) {
+        for(int i = 0; i < this.getInvSize(); ++i) {
+            ItemStack itemStack = this.getInvStack(i);
+            if (items.contains(itemStack.getItem()) && itemStack.getCount() > 0) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }
 

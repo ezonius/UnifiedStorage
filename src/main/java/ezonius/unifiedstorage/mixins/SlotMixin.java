@@ -7,6 +7,10 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Mutable;
 import org.spongepowered.asm.mixin.Shadow;
 
+/**
+ *
+ * @author Partly NinjaPhenix
+ */
 @Mixin(Slot.class)
 public final class SlotMixin implements SlotAccessor
 {

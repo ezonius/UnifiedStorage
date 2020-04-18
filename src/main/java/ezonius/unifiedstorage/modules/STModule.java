@@ -25,24 +25,17 @@ public class STModule implements InitModule {
 
     @Override
     public void initCommon() {
-
         Registry.register(Registry.BLOCK, STBlock.ID, ST_BLOCK);
         ST_BLOCK_ENTITY_TYPE = Registry.register(Registry.BLOCK_ENTITY_TYPE, STBlock.ID,
                 BlockEntityType.Builder.create((STBlockEntity::new), ST_BLOCK).build(null));
         ContainerProviderRegistry.INSTANCE.registerFactory(STBlock.ID,
-                (syncId, identifier, playerEntity, packetByteBuf) ->
-                        new STBlockController(syncId, playerEntity.inventory, BlockContext.create(playerEntity.world, packetByteBuf.readBlockPos())));
+                (syncId, identifier, player, packetByteBuf) ->
+                        new STBlockController(syncId, player.inventory, BlockContext.create(player.world, packetByteBuf.readBlockPos())));
         Registry.register(Registry.ITEM, STBlock.ID, new BlockItem(ST_BLOCK, new Item.Settings().group(ItemGroup.INVENTORY)));
-
-
     }
 
     @Override
     @Environment(EnvType.CLIENT)
     public void initClient() {
-        ScreenProviderRegistry.INSTANCE.registerFactory(STBlock.ID,
-                (i, identifier, playerEntity, packetByteBuf) -> new STScreen(new STBlockController(i,
-                        playerEntity.inventory,
-                        BlockContext.create(playerEntity.world, packetByteBuf.readBlockPos())), playerEntity));
     }
 }

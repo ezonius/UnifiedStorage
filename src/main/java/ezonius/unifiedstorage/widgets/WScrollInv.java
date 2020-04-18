@@ -1,21 +1,19 @@
 package ezonius.unifiedstorage.widgets;
 
-import ezonius.unifiedstorage.block.entity.STBlockEntity;
+import ezonius.unifiedstorage.inventory.MergedInventories;
 import ezonius.unifiedstorage.misc.SlotAccessor;
 import io.github.cottonmc.cotton.gui.CottonCraftingController;
 import io.github.cottonmc.cotton.gui.ValidatedSlot;
 import io.github.cottonmc.cotton.gui.client.BackgroundPainter;
 import io.github.cottonmc.cotton.gui.widget.WGridPanel;
-import io.github.cottonmc.cotton.gui.widget.WTextField;
 import io.github.cottonmc.cotton.gui.widget.data.Axis;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.TranslatableText;
 
 import java.awt.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 public class WScrollInv extends WGridPanel {
     private final int maxRows;
@@ -28,17 +26,14 @@ public class WScrollInv extends WGridPanel {
     private final Inventory blockInventory;
     private ArrayList<Integer> unsortedToSortedSlotMap = new ArrayList<>();
     private HashMap<Integer, Integer> sortedSlotMap = new HashMap<>();
-    public int scrollValue = 0;
-    private String currentSearchTerm = "";
 
-    @Environment(EnvType.CLIENT)
     public WScrollInv(Inventory blockInventory, int slotsWide, int maxRows, CottonCraftingController hostController) {
         this.blockInventory = blockInventory;
         this.slotsWide = slotsWide;
         this.maxRows = maxRows;
         this.hostController = hostController;
-        this.rows = getRows(this.blockInventory, this.slotsWide);
-        this.scrollSize = getMaxScrollValue(this.blockInventory, this.slotsWide);
+        this.rows = computeRows(this.blockInventory, this.slotsWide);
+        this.scrollSize = computeMaxScrollValue(this.blockInventory, this.slotsWide);
         for (int i = 0; i < blockInventory.getInvSize(); i++) {
             unsortedToSortedSlotMap.add(i);
         }
@@ -76,22 +71,25 @@ public class WScrollInv extends WGridPanel {
 
     @Override
     public void tick() {
-//        if (!this.currentSearchTerm.equals(this.searchField.getText())) {
-//            mapSlotsToSorted();
-//            this.scrollbar.setValue(0);
-//            this.currentSearchTerm = this.searchField.getText();
-//        }
-//        if (this.scrollValue != scrollbar.getValue()) {
-//            repositionScrollInvSlots(scrollbar.getValue());
-//            this.scrollValue = scrollbar.getValue();
-//        }
         super.tick();
     }
 
+    @Override
+    public void onMouseScroll(int x, int y, double amount) {
+        if (isWithinBounds(x, y))
+            scrollbar.setValue((int) (scrollbar.getValue() - amount));
+        super.onMouseScroll(x, y, amount);
+    }
+
+    /**
+     * Reposition the inventory slots so that the correct rows are shown and the hidden slots
+     * are moved outside of view.
+     * @param scrollValue the new absolute scroll value
+     */
     protected void repositionScrollInvSlots(int scrollValue) {
         for (int slotsIndex = 0; slotsIndex < hostController.slots.size(); slotsIndex++) {
             ValidatedSlot entry = (ValidatedSlot) hostController.slots.get(slotsIndex);
-            if (!(entry.inventory instanceof STBlockEntity))
+            if (!(entry.inventory instanceof MergedInventories))
                 continue;
             int targetIndex = this.searchField.getText().isEmpty() ? entry.getInventoryIndex() :
                     sortedSlotMap.get(entry.getInventoryIndex());
@@ -99,6 +97,12 @@ public class WScrollInv extends WGridPanel {
         }
     }
 
+    /**
+     * Reposition inventory slot to a new slot position
+     * @param scrollValue the absolute scroll value
+     * @param slotsIndex the index of the slots to be moved
+     * @param targetSlot the index of the target slot
+     */
     protected void repositionSlot(int scrollValue, int slotsIndex, int targetSlot) {
         var x = (targetSlot % this.slotsWide);
         var y = Math.abs(targetSlot / this.slotsWide);
@@ -107,6 +111,9 @@ public class WScrollInv extends WGridPanel {
         accessor.setY(y >= scrollValue && y < scrollValue + this.maxRows ? (y - scrollValue) * 18 + getY() : 3000);
     }
 
+    /**
+     * Generates a new map for slot positions based on search field
+     */
     protected void mapSlotsToSorted() {
         if (searchField.getText().isEmpty()) {
             unsortedToSortedSlotMap.sort(Integer::compareTo);
@@ -117,10 +124,11 @@ public class WScrollInv extends WGridPanel {
         for (int i = 0; i < unsortedToSortedSlotMap.size(); i++) {
             sortedSlotMap.putIfAbsent(unsortedToSortedSlotMap.get(i), i);
         }
-        this.scrollValue = -1;
     }
 
     /**
+     * Compare function for search field. Will first sort of search field matches
+     * and then sort by name
      * @author Partly by NinjaPhenix
      */
     protected int compareStackToSearch(Integer a, Integer b) {
@@ -141,19 +149,31 @@ public class WScrollInv extends WGridPanel {
         return -1;
     }
 
-    private int getRows(Inventory inventory, int slotsWide) {
+    /**
+     * Computes the amount of rows for the inventory
+     * @param inventory the inventory
+     * @param slotsWide how many slots wide a row is
+     * @return amount of rows
+     */
+    private int computeRows(Inventory inventory, int slotsWide) {
         return inventory.getInvSize() / slotsWide;
     }
 
-    private int getMaxScrollValue(Inventory inventory, int slotsWide) {
-        int slotsHigh = (inventory.getInvSize() / slotsWide);
-        return Math.max(slotsHigh - maxRows + 1, 0);
+    /**
+     * Computes the max scroll value for a given inventory and row length
+     * @param inventory the given inventory
+     * @param slotsWide row length
+     * @return max scroll value
+     */
+    private int computeMaxScrollValue(Inventory inventory, int slotsWide) {
+        return Math.max(this.computeRows(inventory, slotsWide) - maxRows + 1, 0);
     }
 
     @Override
-    public void onMouseScroll(int x, int y, double amount) {
-        if (isWithinBounds(x, y))
-            scrollbar.setValue((int) (scrollbar.getValue() - amount));
-        super.onMouseScroll(x, y, amount);
+    public void onKeyPressed(int ch, int key, int modifiers) {
+        super.onKeyPressed(ch, key, modifiers);
+
     }
+
+
 }

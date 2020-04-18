@@ -12,12 +12,15 @@ public class WScrollInv_TextField extends WTextField {
     @Override
     public void onCharTyped(char ch) {
         super.onCharTyped(ch);
+    }
+
+    @Override
+    public void setText(String s) {
+        super.setText(s);
         if (this.parent instanceof WScrollInv) {
             var parent = ((WScrollInv) this.parent);
             parent.mapSlotsToSorted();
             parent.scrollbar.setValue(0);
         }
     }
-
-
 }
