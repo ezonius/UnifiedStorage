@@ -43,14 +43,11 @@ public class STBlock extends BlockWithEntity {
     @Override
     public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit) {
         if (world.isClient)
-            return ActionResult.PASS;
+            return ActionResult.SUCCESS;
         else {
             BlockEntity blockEntity = world.getBlockEntity(pos);
             if (blockEntity instanceof STBlockEntity) {
-                //player.openContainer((STBlockEntity) blockEntity);
                 ContainerProviderRegistry.INSTANCE.openContainer(STBlock.ID, player, (packetByteBuf -> packetByteBuf.writeBlockPos(pos)));
-
-                player.incrementStat(Stats.OPEN_BARREL);
             }
         }
         return ActionResult.SUCCESS;
