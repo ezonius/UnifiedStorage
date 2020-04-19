@@ -1,7 +1,6 @@
 package ezonius.unifiedstorage;
 
 import ezonius.unifiedstorage.modules.STModule;
-import ezonius.unifiedstorage.modules.USCModule;
 import net.fabricmc.api.ModInitializer;
 
 public class UnifiedStorage implements ModInitializer {
@@ -9,7 +8,6 @@ public class UnifiedStorage implements ModInitializer {
 
     @Override
     public void onInitialize() {
-        new USCModule().initCommon();
         new STModule().initCommon();
     }
 }

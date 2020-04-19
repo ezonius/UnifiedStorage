@@ -1,8 +1,6 @@
 package ezonius.unifiedstorage;
 
-import ezonius.unifiedstorage.modules.STModule;
 import ezonius.unifiedstorage.modules.STModuleClient;
-import ezonius.unifiedstorage.modules.USCModule;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -11,7 +9,6 @@ import net.fabricmc.api.Environment;
 public class UnifiedStorageClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
-        new USCModule().initClient();
         new STModuleClient().initClient();
     }
 }
