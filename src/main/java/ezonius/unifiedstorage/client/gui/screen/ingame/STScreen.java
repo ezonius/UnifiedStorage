@@ -25,7 +25,7 @@ public class STScreen extends CottonInventoryScreen<STBlockController> {
             if (Objects.requireNonNull(this.minecraft).options.keyPickItem.matchesKey(ch, keyCode)) {
                 this.onMouseClick(this.focusedSlot, this.focusedSlot.id, 0, SlotActionType.CLONE);
             } else if (this.minecraft.options.keyDrop.matchesKey(ch, keyCode)) {
-                this.onMouseClick(this.focusedSlot, ((ValidatedSlot)focusedSlot).getInventoryIndex(), hasControlDown() ? 1 : 0, SlotActionType.THROW);
+                this.onMouseClick(this.focusedSlot, this.focusedSlot.id, hasControlDown() ? 1 : 0, SlotActionType.THROW);
             }
         }
 

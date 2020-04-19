@@ -1,22 +1,37 @@
 package ezonius.unifiedstorage.inventory;
 
+import ezonius.unifiedstorage.UnifiedStorage;
+import ezonius.unifiedstorage.block.STBlock;
 import ezonius.unifiedstorage.block.entity.STBlockEntity;
+import ezonius.unifiedstorage.modules.STModule;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.LootableContainerBlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.Pair;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.stream.Collectors;
 
 public class MergedInventories implements Inventory {
 
     private final ArrayList<STBlockEntity> inventory;
-    private int invSize;
+    private final int invSize;
+    private final HashMap<Integer, Pair<Integer, Integer>> invSlotMap;
 
-    public MergedInventories(ArrayList<STBlockEntity> collect) {
+    public MergedInventories(ArrayList<STBlockEntity> collect, int invSize) {
         this.inventory = collect;
-        this.invSize = collect.stream().map(STBlockEntity::getInvSize).reduce(Integer::sum).orElse(108);
+        this.invSize = collect.stream().map(STBlockEntity::getInvSize).reduce(Integer::sum).orElse(invSize);
+        this.invSlotMap = new HashMap<>();
+        var slot = 0;
+        for (int i = 0; i < inventory.size(); i++) {
+            for (int j = 0; j < inventory.get(i).invSize; j++) {
+                invSlotMap.put(slot, new Pair<>(i, j));
+                slot++;
+            }
+        }
     }
 
     @Override
@@ -31,31 +46,31 @@ public class MergedInventories implements Inventory {
 
     @Override
     public ItemStack getInvStack(int slot) {
-        int index = slot != 0 ? Math.abs(slot / STBlockEntity.INV_SIZE) : 0;
-        return inventory.get(index).getInvStack(slot - (index * STBlockEntity.INV_SIZE));
+        var targetSlot = invSlotMap.get(slot);
+        return inventory.get(targetSlot.getLeft()).getInvStack(targetSlot.getRight());
     }
 
     @Override
     public ItemStack takeInvStack(int slot, int amount) {
-        int index = slot != 0 ? Math.abs(slot / STBlockEntity.INV_SIZE) : 0;
-        return inventory.get(index).takeInvStack(slot - (index * STBlockEntity.INV_SIZE), amount);
+        var targetSlot = invSlotMap.get(slot);
+        return inventory.get(targetSlot.getLeft()).takeInvStack(targetSlot.getRight(), amount);
     }
 
     @Override
     public ItemStack removeInvStack(int slot) {
-        int index = slot != 0 ? Math.abs(slot / STBlockEntity.INV_SIZE) : 0;
-        return inventory.get(index).removeInvStack(slot - (index * STBlockEntity.INV_SIZE));
+        var targetSlot = invSlotMap.get(slot);
+        return inventory.get(targetSlot.getLeft()).removeInvStack(targetSlot.getRight());
     }
 
     @Override
     public void setInvStack(int slot, ItemStack stack) {
-        int index = slot != 0 ? Math.abs(slot / STBlockEntity.INV_SIZE) : 0;
-        inventory.get(index).setInvStack(slot - (index * STBlockEntity.INV_SIZE), stack);
+        var targetSlot = invSlotMap.get(slot);
+        inventory.get(targetSlot.getLeft()).setInvStack(targetSlot.getRight(), stack);
     }
 
     @Override
     public int getInvMaxStackAmount() {
-        return STBlockEntity.MAX_STACK_AMOUNT;
+        return UnifiedStorage.MAX_STACK_SIZE;
     }
 
     @Override
@@ -70,18 +85,20 @@ public class MergedInventories implements Inventory {
 
     @Override
     public void onInvOpen(PlayerEntity player) {
-        inventory.forEach(entry -> entry.onInvOpen(player));
+        //inventory.forEach(entry -> entry.onInvOpen(player));
+        inventory.get(0).onInvOpen(player);
     }
 
     @Override
     public void onInvClose(PlayerEntity player) {
-        inventory.forEach(entry -> entry.onInvClose(player));
+        //inventory.forEach(entry -> entry.onInvClose(player));
+        inventory.get(0).onInvClose(player);
     }
 
     @Override
     public boolean isValidInvStack(int slot, ItemStack stack) {
-        int index = slot != 0 ? Math.abs(slot / STBlockEntity.INV_SIZE) : 0;
-        return inventory.get(index).isValidInvStack(slot - (index * STBlockEntity.INV_SIZE), stack);
+        var targetSlot = invSlotMap.get(slot);
+        return inventory.get(targetSlot.getLeft()).isValidInvStack(targetSlot.getRight(), stack);
     }
 
     @Override

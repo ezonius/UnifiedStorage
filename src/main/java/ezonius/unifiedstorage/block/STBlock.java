@@ -1,7 +1,7 @@
 package ezonius.unifiedstorage.block;
 
 import blue.endless.jankson.annotation.Nullable;
-import ezonius.unifiedstorage.UnifiedStorage;
+import ezonius.unifiedstorage.init.CommonEntry;
 import ezonius.unifiedstorage.block.entity.STBlockEntity;
 import net.fabricmc.fabric.api.container.ContainerProviderRegistry;
 import net.minecraft.block.Block;
@@ -16,7 +16,6 @@ import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.world.ServerWorld;
-import net.minecraft.stat.Stats;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.DirectionProperty;
@@ -31,12 +30,15 @@ import net.minecraft.world.World;
 import java.util.Random;
 
 public class STBlock extends BlockWithEntity {
-    public static final Identifier ID = new Identifier(UnifiedStorage.MODNAME, "storageterminal");
     public static final DirectionProperty FACING = Properties.FACING;
     public static final BooleanProperty OPEN = Properties.OPEN;
+    private final Identifier blockId;
+    private final int invSize;
 
-    public STBlock(Settings settings) {
+    public STBlock(Settings settings, Identifier blockId, int InvSize) {
         super(settings);
+        this.blockId = blockId;
+        invSize = InvSize;
         this.setDefaultState(this.stateManager.getDefaultState().with(FACING, Direction.NORTH).with(OPEN, false));
     }
 
@@ -47,7 +49,7 @@ public class STBlock extends BlockWithEntity {
         else {
             BlockEntity blockEntity = world.getBlockEntity(pos);
             if (blockEntity instanceof STBlockEntity) {
-                ContainerProviderRegistry.INSTANCE.openContainer(STBlock.ID, player, (packetByteBuf -> packetByteBuf.writeBlockPos(pos)));
+                ContainerProviderRegistry.INSTANCE.openContainer(blockId, player, (packetByteBuf -> packetByteBuf.writeBlockPos(pos)));
             }
         }
         return ActionResult.SUCCESS;
@@ -72,13 +74,12 @@ public class STBlock extends BlockWithEntity {
         if (blockEntity instanceof STBlockEntity) {
             ((STBlockEntity)blockEntity).tick();
         }
-
     }
 
     @Override
     @Nullable
     public BlockEntity createBlockEntity(BlockView view) {
-        return new STBlockEntity();
+        return new STBlockEntity(this, this.invSize);
     }
 
     @Override

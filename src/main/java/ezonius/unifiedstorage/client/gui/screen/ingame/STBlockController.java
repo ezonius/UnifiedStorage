@@ -1,17 +1,13 @@
 package ezonius.unifiedstorage.client.gui.screen.ingame;
 
-import com.google.common.collect.Sets;
+import ezonius.unifiedstorage.UnifiedStorage;
 import ezonius.unifiedstorage.block.entity.STBlockEntity;
 import ezonius.unifiedstorage.inventory.MergedInventories;
 import ezonius.unifiedstorage.widgets.WScrollInv;
 import io.github.cottonmc.cotton.gui.CottonCraftingController;
 import io.github.cottonmc.cotton.gui.widget.WDynamicLabel;
 import io.github.cottonmc.cotton.gui.widget.WGridPanel;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.container.BlockContext;
-import net.minecraft.container.Slot;
 import net.minecraft.container.SlotActionType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -20,23 +16,20 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.recipe.RecipeType;
 import net.minecraft.text.TranslatableText;
 
-import java.util.ArrayList;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 public class STBlockController extends CottonCraftingController {
     private final int maxRows = 6;
-    private final int slotsWide = 9;
+    private final int slotsWide = UnifiedStorage.ROW_LENGTH;
     private final int titleY = 0;
     private final int scrollInvY = titleY + 1;
     private final int playerInvY = titleY + maxRows + 2;
     private final WScrollInv wScrollInv;
+    public final BlockContext context;
 
-    public STBlockController(int syncId, PlayerInventory playerInventory, BlockContext context) {
-        super(RecipeType.SMELTING, syncId, playerInventory, new MergedInventories(((STBlockEntity) getBlockInventory(context))
-                .getRecursiveAdjacentEntities(((STBlockEntity) getBlockInventory(context))
-                        .asSingletonHashSet())
-                .collect(Collectors.toCollection(ArrayList::new))), getBlockPropertyDelegate(context));
+    public STBlockController(int syncId, PlayerInventory playerInventory, BlockContext context, int invSize) {
+        super(RecipeType.SMELTING, syncId, playerInventory,
+                new MergedInventories(((STBlockEntity) getBlockInventory(context)).getAllConnectedInventories(), invSize),
+                getBlockPropertyDelegate(context));
+        this.context = context;
         blockInventory.onInvOpen(playerInventory.player);
 
         WGridPanel root = new WGridPanel();
@@ -77,5 +70,9 @@ public class STBlockController extends CottonCraftingController {
     @Override
     public ItemStack onSlotClick(int slotNumber, int button, SlotActionType action, PlayerEntity player) {
         return super.onSlotClick(slotNumber, button, action, player);
+    }
+
+    public STBlockEntity getInventory() {
+        return ((STBlockEntity) getBlockInventory(context));
     }
 }

@@ -12,10 +12,10 @@
   "environment": "*",
   "entrypoints": {
     "main": [
-      "ezonius.unifiedstorage.UnifiedStorage"
+      "ezonius.unifiedstorage.init.CommonEntry"
     ],
     "client": [
-      "ezonius.unifiedstorage.UnifiedStorageClient"
+      "ezonius.unifiedstorage.init.ClientEntry"
     ]
   },
   "mixins": [

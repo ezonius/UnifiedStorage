@@ -39,12 +39,14 @@ public class WScrollInv extends WGridPanel {
         }
 
         // Container Inventory
-        var visibleSlots = new WScrollInv_ItemSlot(this.blockInventory, 0, this.slotsWide, this.maxRows, false, false);
-        var invisibleSlots = new WScrollInv_ItemSlot(this.blockInventory, this.slotsWide * maxRows, this.slotsWide,
-                (this.rows) - this.maxRows, false, false);
-        invisibleSlots.setShouldExpandToFit(false);
+        var visibleSlots = new WScrollInv_ItemSlot(this.blockInventory, 0, this.slotsWide, Math.min(rows, maxRows), false, false);
         this.add(visibleSlots, 0, 0);
-        this.add(invisibleSlots, 0, 2000);
+        if (rows > maxRows) {
+            var invisibleSlots = new WScrollInv_ItemSlot(this.blockInventory, this.slotsWide * maxRows, this.slotsWide,
+                    (this.rows) - this.maxRows, false, false);
+            invisibleSlots.setShouldExpandToFit(false);
+            this.add(invisibleSlots, 0, 2000);
+        }
 
         // Scroll Bar
         this.scrollbar = new WScrollInv_ScrollBar(Axis.VERTICAL);
