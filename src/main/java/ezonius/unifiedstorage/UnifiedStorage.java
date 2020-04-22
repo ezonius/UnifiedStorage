@@ -1,6 +1,6 @@
 package ezonius.unifiedstorage;
 
-import ezonius.unifiedstorage.block.STBlock;
+import ezonius.unifiedstorage.block.EnhBarrelBlock;
 import net.fabricmc.fabric.api.block.FabricBlockSettings;
 import net.minecraft.block.Block;
 import net.minecraft.block.Material;
@@ -11,10 +11,10 @@ import java.util.Arrays;
 
 public class UnifiedStorage {
     public static String MODNAME = "unifiedstorage";
+    public static String ST_BLOCK_ID = "enhanced_barrel";
     public static int MAX_STACK_SIZE = 64;
     public static int ROW_LENGTH = 9;
     public static int MAX_ROWS = 6;
-    public static String ST_BLOCK_ID = "storageterminal";
 
     // Block Identifiers
     public static Identifier ST_BLOCKID_WOOD = UnifiedStorage.ModIdentifier(ST_BLOCK_ID + "_wood");
@@ -31,11 +31,11 @@ public class UnifiedStorage {
     public static final int ST_BLOCK_EMERALD_INVSIZE = 15 * ROW_LENGTH;
 
     // Blocks
-    public static final Block ST_BLOCK_WOOD =      new STBlock(FabricBlockSettings.of(Material.WOOD).build(), UnifiedStorage.ST_BLOCKID_WOOD, ST_BLOCK_WOOD_INVSIZE);
-    public static final Block ST_BLOCK_IRON =      new STBlock(FabricBlockSettings.of(Material.METAL).build(), UnifiedStorage.ST_BLOCKID_IRON, ST_BLOCK_IRON_INVSIZE);
-    public static final Block ST_BLOCK_GOLD =      new STBlock(FabricBlockSettings.of(Material.METAL).build(), UnifiedStorage.ST_BLOCKID_GOLD, ST_BLOCK_GOLD_INVSIZE);
-    public static final Block ST_BLOCK_DIAMOND =   new STBlock(FabricBlockSettings.of(Material.METAL).build(), UnifiedStorage.ST_BLOCKID_DIAMOND, ST_BLOCK_DIAMOND_INVSIZE);
-    public static final Block ST_BLOCK_EMERALD =   new STBlock(FabricBlockSettings.of(Material.METAL).build(), UnifiedStorage.ST_BLOCKID_EMERALD, ST_BLOCK_EMERALD_INVSIZE);
+    public static final Block ST_BLOCK_WOOD =      new EnhBarrelBlock(FabricBlockSettings.of(Material.WOOD).build(), UnifiedStorage.ST_BLOCKID_WOOD, ST_BLOCK_WOOD_INVSIZE);
+    public static final Block ST_BLOCK_IRON =      new EnhBarrelBlock(FabricBlockSettings.of(Material.METAL).build(), UnifiedStorage.ST_BLOCKID_IRON, ST_BLOCK_IRON_INVSIZE);
+    public static final Block ST_BLOCK_GOLD =      new EnhBarrelBlock(FabricBlockSettings.of(Material.METAL).build(), UnifiedStorage.ST_BLOCKID_GOLD, ST_BLOCK_GOLD_INVSIZE);
+    public static final Block ST_BLOCK_DIAMOND =   new EnhBarrelBlock(FabricBlockSettings.of(Material.METAL).build(), UnifiedStorage.ST_BLOCKID_DIAMOND, ST_BLOCK_DIAMOND_INVSIZE);
+    public static final Block ST_BLOCK_EMERALD =   new EnhBarrelBlock(FabricBlockSettings.of(Material.METAL).build(), UnifiedStorage.ST_BLOCKID_EMERALD, ST_BLOCK_EMERALD_INVSIZE);
 
 
     public static Identifier ModIdentifier(String blockId) {

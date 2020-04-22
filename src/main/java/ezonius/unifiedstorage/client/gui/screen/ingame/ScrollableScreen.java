@@ -4,7 +4,6 @@ import ezonius.unifiedstorage.UnifiedStorage;
 import io.github.cottonmc.cotton.gui.client.CottonInventoryScreen;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-//import net.kyrptonaught.inventorysorter.client.SortButtonWidget;
 import net.minecraft.client.gui.widget.AbstractButtonWidget;
 import net.minecraft.container.SlotActionType;
 import net.minecraft.entity.player.PlayerEntity;
@@ -12,8 +11,8 @@ import net.minecraft.entity.player.PlayerEntity;
 import java.util.Objects;
 
 @Environment(EnvType.CLIENT)
-public class STScreen extends CottonInventoryScreen<STBlockController> {
-    public STScreen(STBlockController container, PlayerEntity player) {
+public class ScrollableScreen extends CottonInventoryScreen<ScrollableContainer> {
+    public ScrollableScreen(ScrollableContainer container, PlayerEntity player) {
         super(container, player);
 
     }
@@ -31,7 +30,6 @@ public class STScreen extends CottonInventoryScreen<STBlockController> {
                 this.onMouseClick(this.focusedSlot, this.focusedSlot.id, hasControlDown() ? 1 : 0, SlotActionType.THROW);
             }
         }
-
         return true;
     }
 

@@ -1,6 +1,5 @@
 package ezonius.unifiedstorage.widgets;
 
-import ezonius.unifiedstorage.client.gui.screen.ingame.STBlockController;
 import io.github.cottonmc.cotton.gui.client.LibGuiClient;
 import io.github.cottonmc.cotton.gui.client.ScreenDrawing;
 import io.github.cottonmc.cotton.gui.widget.WScrollBar;

@@ -9,7 +9,7 @@ import org.spongepowered.asm.mixin.Shadow;
 
 /**
  *
- * @author Partly NinjaPhenix
+ * @author NinjaPhenix
  */
 @Mixin(Slot.class)
 public final class SlotMixin implements SlotAccessor

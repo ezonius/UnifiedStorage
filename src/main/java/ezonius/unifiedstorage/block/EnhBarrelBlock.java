@@ -1,8 +1,7 @@
 package ezonius.unifiedstorage.block;
 
 import blue.endless.jankson.annotation.Nullable;
-import ezonius.unifiedstorage.init.CommonEntry;
-import ezonius.unifiedstorage.block.entity.STBlockEntity;
+import ezonius.unifiedstorage.block.entity.EnhBarrelBlockEntity;
 import net.fabricmc.fabric.api.container.ContainerProviderRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockRenderType;
@@ -29,13 +28,13 @@ import net.minecraft.world.World;
 
 import java.util.Random;
 
-public class STBlock extends BlockWithEntity {
+public class EnhBarrelBlock extends BlockWithEntity {
     public static final DirectionProperty FACING = Properties.FACING;
     public static final BooleanProperty OPEN = Properties.OPEN;
     private final Identifier blockId;
     private final int invSize;
 
-    public STBlock(Settings settings, Identifier blockId, int InvSize) {
+    public EnhBarrelBlock(Settings settings, Identifier blockId, int InvSize) {
         super(settings);
         this.blockId = blockId;
         invSize = InvSize;
@@ -48,7 +47,7 @@ public class STBlock extends BlockWithEntity {
             return ActionResult.SUCCESS;
         else {
             BlockEntity blockEntity = world.getBlockEntity(pos);
-            if (blockEntity instanceof STBlockEntity) {
+            if (blockEntity instanceof EnhBarrelBlockEntity) {
                 ContainerProviderRegistry.INSTANCE.openContainer(blockId, player, (packetByteBuf -> packetByteBuf.writeBlockPos(pos)));
             }
         }
@@ -71,15 +70,15 @@ public class STBlock extends BlockWithEntity {
     @Override
     public void scheduledTick(BlockState state, ServerWorld world, BlockPos pos, Random random) {
         BlockEntity blockEntity = world.getBlockEntity(pos);
-        if (blockEntity instanceof STBlockEntity) {
-            ((STBlockEntity)blockEntity).tick();
+        if (blockEntity instanceof EnhBarrelBlockEntity) {
+            ((EnhBarrelBlockEntity)blockEntity).tick();
         }
     }
 
     @Override
     @Nullable
     public BlockEntity createBlockEntity(BlockView view) {
-        return new STBlockEntity(this, this.invSize);
+        return new EnhBarrelBlockEntity(this, this.invSize);
     }
 
     @Override
@@ -91,14 +90,10 @@ public class STBlock extends BlockWithEntity {
     public void onPlaced(World world, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack itemStack) {
         BlockEntity blockEntity = world.getBlockEntity(pos);
         if (itemStack.hasCustomName()) {
-            if (blockEntity instanceof STBlockEntity) {
-                ((STBlockEntity)blockEntity).setCustomName(itemStack.getName());
+            if (blockEntity instanceof EnhBarrelBlockEntity) {
+                ((EnhBarrelBlockEntity)blockEntity).setCustomName(itemStack.getName());
             }
         }
-//        if (blockEntity instanceof STBlockEntity) {
-//            ((STBlockEntity) blockEntity).getRecursiveAdjacentEntities(((STBlockEntity) blockEntity).asSingletonHashSet())
-//                    .forEach(STBlockEntity::updateConnectedInventories);
-//        }
     }
 
     @Override

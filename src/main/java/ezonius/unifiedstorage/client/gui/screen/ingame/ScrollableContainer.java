@@ -1,7 +1,7 @@
 package ezonius.unifiedstorage.client.gui.screen.ingame;
 
 import ezonius.unifiedstorage.UnifiedStorage;
-import ezonius.unifiedstorage.block.entity.STBlockEntity;
+import ezonius.unifiedstorage.block.entity.EnhBarrelBlockEntity;
 import ezonius.unifiedstorage.inventory.MergedInventories;
 import ezonius.unifiedstorage.widgets.WScrollInv;
 import ezonius.unifiedstorage.widgets.WScrollInv_ItemSlot;
@@ -9,15 +9,13 @@ import io.github.cottonmc.cotton.gui.CottonCraftingController;
 import io.github.cottonmc.cotton.gui.widget.WDynamicLabel;
 import io.github.cottonmc.cotton.gui.widget.WPlainPanel;
 import net.minecraft.container.BlockContext;
-import net.minecraft.container.Slot;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventory;
-import net.minecraft.item.ItemStack;
 import net.minecraft.recipe.RecipeType;
 import net.minecraft.text.TranslatableText;
 
-public class STBlockController extends CottonCraftingController {
+public class ScrollableContainer extends CottonCraftingController {
     private final int slotHeight = 18;
     private final int maxRows = UnifiedStorage.MAX_ROWS;
     private final int slotsWide = UnifiedStorage.ROW_LENGTH;
@@ -25,9 +23,9 @@ public class STBlockController extends CottonCraftingController {
     public final BlockContext context;
     private final int invSize;
 
-    public STBlockController(int syncId, PlayerInventory playerInventory, BlockContext context, int invSize, boolean mergedInventory) {
+    public ScrollableContainer(int syncId, PlayerInventory playerInventory, BlockContext context, int invSize, boolean mergedInventory) {
         super(RecipeType.SMELTING, syncId, playerInventory,
-                mergedInventory ? new MergedInventories(((STBlockEntity) getBlockInventory(context)).getAllConnectedInventories(), invSize) : ((STBlockEntity) getBlockInventory(context)),
+                mergedInventory ? new MergedInventories(((EnhBarrelBlockEntity) getBlockInventory(context)).getAllConnectedInventories(), invSize) : ((EnhBarrelBlockEntity) getBlockInventory(context)),
                 getBlockPropertyDelegate(context));
         this.context = context;
         this.invSize = invSize;
@@ -53,7 +51,7 @@ public class STBlockController extends CottonCraftingController {
         setRootPanel(root);
 
         // Title
-        WDynamicLabel dynamicLabel = new WDynamicLabel(() -> new TranslatableText("container.unifiedstorage.storageterminal").asString());
+        WDynamicLabel dynamicLabel = new WDynamicLabel(() -> new TranslatableText("container.unifiedstorage.enhanced_barrel").asString());
         root.add(dynamicLabel, 0, titleY);
 
         // Scrollable Inventory

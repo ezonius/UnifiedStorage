@@ -3,7 +3,7 @@
   "id": "unifiedstorage",
   "version": "${version}",
   "name": "unifiedstorage",
-  "description": "Adds a new block that merges all connected chests/barrels into a single inventory. Includes a search option.",
+  "description": "Adds a block that functions as an interface for all connected barrels/chests. Features scrolling and search",
   "authors": [
     "Ezonius"
   ],

@@ -1,9 +1,9 @@
 package ezonius.unifiedstorage.block.entity;
 
 import ezonius.unifiedstorage.UnifiedStorage;
-import ezonius.unifiedstorage.block.STBlock;
-import ezonius.unifiedstorage.client.gui.screen.ingame.STBlockController;
-import ezonius.unifiedstorage.modules.STModule;
+import ezonius.unifiedstorage.block.EnhBarrelBlock;
+import ezonius.unifiedstorage.client.gui.screen.ingame.ScrollableContainer;
+import ezonius.unifiedstorage.modules.EnhBarrelModule;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.BlockEntity;
@@ -30,21 +30,21 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class STBlockEntity extends LootableContainerBlockEntity implements Inventory {
+public class EnhBarrelBlockEntity extends LootableContainerBlockEntity implements Inventory {
 
     private DefaultedList<ItemStack> inventory;
     private int viewerCount;
     private final Block block;
     public int invSize;
 
-    public STBlockEntity(Block block, int invSize) {
-        super(STModule.ST_BLOCK_ENTITY_TYPES.get(block));
+    public EnhBarrelBlockEntity(Block block, int invSize) {
+        super(EnhBarrelModule.ST_BLOCK_ENTITY_TYPES.get(block));
         this.block = block;
         this.invSize = invSize;
         this.inventory = DefaultedList.ofSize(this.invSize, ItemStack.EMPTY);
     }
 
-    public HashSet<STBlockEntity> asSingletonHashSet() {
+    public HashSet<EnhBarrelBlockEntity> asSingletonHashSet() {
         return new HashSet<>(Arrays.asList(this));
     }
 
@@ -64,7 +64,6 @@ public class STBlockEntity extends LootableContainerBlockEntity implements Inven
         if (!this.deserializeLootTable(tag)) {
             Inventories.fromTag(tag, this.inventory);
         }
-
     }
 
     @Override
@@ -72,7 +71,7 @@ public class STBlockEntity extends LootableContainerBlockEntity implements Inven
         return this.invSize;
     }
 
-    private Stream<STBlockEntity> getAdjacentInventories() {
+    private Stream<EnhBarrelBlockEntity> getAdjacentInventories() {
         ArrayList<BlockEntity> adjacentEntities = new ArrayList<>();
         if (this.world != null) {
             adjacentEntities.add(this.world.getBlockEntity(this.pos.down()));
@@ -83,14 +82,14 @@ public class STBlockEntity extends LootableContainerBlockEntity implements Inven
             adjacentEntities.add(this.world.getBlockEntity(this.pos.west()));
         }
         return adjacentEntities.stream()
-                .filter((entry) -> entry instanceof STBlockEntity)
-                .map(entry -> ((STBlockEntity) entry))
+                .filter((entry) -> entry instanceof EnhBarrelBlockEntity)
+                .map(entry -> ((EnhBarrelBlockEntity) entry))
                 .distinct();
     }
 
-    public Stream<STBlockEntity> getRecursiveAdjacentEntities(HashSet<STBlockEntity> checkList) {
-        HashSet<STBlockEntity> finalCheckList = Objects.requireNonNullElseGet(checkList, HashSet::new);
-        Stream<STBlockEntity> filteredAdjacent = getAdjacentInventories()
+    public Stream<EnhBarrelBlockEntity> getRecursiveAdjacentEntities(HashSet<EnhBarrelBlockEntity> checkList) {
+        HashSet<EnhBarrelBlockEntity> finalCheckList = Objects.requireNonNullElseGet(checkList, HashSet::new);
+        Stream<EnhBarrelBlockEntity> filteredAdjacent = getAdjacentInventories()
                 .filter(entry -> {
                     if (!finalCheckList.contains(entry)) {
                         finalCheckList.add(entry);
@@ -104,14 +103,14 @@ public class STBlockEntity extends LootableContainerBlockEntity implements Inven
                         .flatMap(stBlockEntity -> stBlockEntity.getRecursiveAdjacentEntities(finalCheckList)));
     }
 
-    public ArrayList<STBlockEntity> getAllConnectedInventories() {
+    public ArrayList<EnhBarrelBlockEntity> getAllConnectedInventories() {
         return getRecursiveAdjacentEntities(this.asSingletonHashSet())
                 .collect(Collectors.toCollection(ArrayList::new));
     }
 
     public Integer getAllConnectedInvSize() {
         return getRecursiveAdjacentEntities(this.asSingletonHashSet())
-                .map(STBlockEntity::getInvSize)
+                .map(EnhBarrelBlockEntity::getInvSize)
                 .reduce(Integer::sum)
                 .orElse(this.getInvSize());
     }
@@ -148,7 +147,7 @@ public class STBlockEntity extends LootableContainerBlockEntity implements Inven
 
     @Override
     protected Text getContainerName() {
-        return new TranslatableText("container.storageterminal");
+        return new TranslatableText("container.enhanced_barrel");
     }
 
     @Override
@@ -164,7 +163,7 @@ public class STBlockEntity extends LootableContainerBlockEntity implements Inven
             }
             ++this.viewerCount;
             BlockState blockState = this.getCachedState();
-            boolean bl = blockState.get(STBlock.OPEN);
+            boolean bl = blockState.get(EnhBarrelBlock.OPEN);
             if (!bl) {
                 this.playSound(blockState, SoundEvents.BLOCK_BARREL_OPEN);
                 this.setOpen(blockState, true);
@@ -192,8 +191,8 @@ public class STBlockEntity extends LootableContainerBlockEntity implements Inven
                         return i;
                     }
                     playerEntity = var8.next();
-                } while(!(playerEntity.container instanceof STBlockController));
-                inventory = ((STBlockController) playerEntity.container).getInventory();
+                } while(!(playerEntity.container instanceof ScrollableContainer));
+                inventory = ((ScrollableContainer) playerEntity.container).getInventory();
             } while(inventory != container);
             ++i;
         }
@@ -213,7 +212,7 @@ public class STBlockEntity extends LootableContainerBlockEntity implements Inven
                 return;
             }
 
-            boolean bl = blockState.get(STBlock.OPEN);
+            boolean bl = blockState.get(EnhBarrelBlock.OPEN);
             if (bl) {
                 this.playSound(blockState, SoundEvents.BLOCK_BARREL_CLOSE);
                 this.setOpen(blockState, false);
@@ -230,11 +229,11 @@ public class STBlockEntity extends LootableContainerBlockEntity implements Inven
     }
 
     private void setOpen(BlockState state, boolean open) {
-        Objects.requireNonNull(this.world).setBlockState(this.getPos(), state.with(STBlock.OPEN, open), 3);
+        Objects.requireNonNull(this.world).setBlockState(this.getPos(), state.with(EnhBarrelBlock.OPEN, open), 3);
     }
 
     private void playSound(BlockState blockState, SoundEvent soundEvent) {
-        Vec3i vec3i = blockState.get(STBlock.FACING).getVector();
+        Vec3i vec3i = blockState.get(EnhBarrelBlock.FACING).getVector();
         double d = (double)this.pos.getX() + 0.5D + (double)vec3i.getX() / 2.0D;
         double e = (double)this.pos.getY() + 0.5D + (double)vec3i.getY() / 2.0D;
         double f = (double)this.pos.getZ() + 0.5D + (double)vec3i.getZ() / 2.0D;

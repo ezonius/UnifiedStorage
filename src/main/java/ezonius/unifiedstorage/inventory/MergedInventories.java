@@ -1,7 +1,7 @@
 package ezonius.unifiedstorage.inventory;
 
 import ezonius.unifiedstorage.UnifiedStorage;
-import ezonius.unifiedstorage.block.entity.STBlockEntity;
+import ezonius.unifiedstorage.block.entity.EnhBarrelBlockEntity;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.LootableContainerBlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -15,13 +15,13 @@ import java.util.HashMap;
 
 public class MergedInventories implements SidedInventory {
 
-    private final ArrayList<STBlockEntity> inventory;
+    private final ArrayList<EnhBarrelBlockEntity> inventory;
     private final int invSize;
     private final HashMap<Integer, Pair<Integer, Integer>> invSlotMap;
 
-    public MergedInventories(ArrayList<STBlockEntity> collect, int invSize) {
+    public MergedInventories(ArrayList<EnhBarrelBlockEntity> collect, int invSize) {
         this.inventory = collect;
-        this.invSize = collect.stream().map(STBlockEntity::getInvSize).reduce(Integer::sum).orElse(invSize);
+        this.invSize = collect.stream().map(EnhBarrelBlockEntity::getInvSize).reduce(Integer::sum).orElse(invSize);
         this.invSlotMap = new HashMap<>();
         int slot = 0;
         for (int i = 0; i < inventory.size(); i++) {
