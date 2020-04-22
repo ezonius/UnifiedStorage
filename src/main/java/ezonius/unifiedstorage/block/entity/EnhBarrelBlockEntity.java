@@ -88,11 +88,10 @@ public class EnhBarrelBlockEntity extends LootableContainerBlockEntity implement
     }
 
     public Stream<EnhBarrelBlockEntity> getRecursiveAdjacentEntities(HashSet<EnhBarrelBlockEntity> checkList) {
-        HashSet<EnhBarrelBlockEntity> finalCheckList = Objects.requireNonNullElseGet(checkList, HashSet::new);
         Stream<EnhBarrelBlockEntity> filteredAdjacent = getAdjacentInventories()
                 .filter(entry -> {
-                    if (!finalCheckList.contains(entry)) {
-                        finalCheckList.add(entry);
+                    if (!checkList.contains(entry)) {
+                        checkList.add(entry);
                         return true;
                     }
                     return false;
@@ -100,7 +99,7 @@ public class EnhBarrelBlockEntity extends LootableContainerBlockEntity implement
         return Stream.concat(
                 Stream.of(this),
                 filteredAdjacent
-                        .flatMap(stBlockEntity -> stBlockEntity.getRecursiveAdjacentEntities(finalCheckList)));
+                        .flatMap(stBlockEntity -> stBlockEntity.getRecursiveAdjacentEntities(checkList)));
     }
 
     public ArrayList<EnhBarrelBlockEntity> getAllConnectedInventories() {
