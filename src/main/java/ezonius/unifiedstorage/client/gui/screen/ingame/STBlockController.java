@@ -4,11 +4,12 @@ import ezonius.unifiedstorage.UnifiedStorage;
 import ezonius.unifiedstorage.block.entity.STBlockEntity;
 import ezonius.unifiedstorage.inventory.MergedInventories;
 import ezonius.unifiedstorage.widgets.WScrollInv;
+import ezonius.unifiedstorage.widgets.WScrollInv_ItemSlot;
 import io.github.cottonmc.cotton.gui.CottonCraftingController;
 import io.github.cottonmc.cotton.gui.widget.WDynamicLabel;
-import io.github.cottonmc.cotton.gui.widget.WGridPanel;
+import io.github.cottonmc.cotton.gui.widget.WPlainPanel;
 import net.minecraft.container.BlockContext;
-import net.minecraft.container.SlotActionType;
+import net.minecraft.container.Slot;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventory;
@@ -17,22 +18,38 @@ import net.minecraft.recipe.RecipeType;
 import net.minecraft.text.TranslatableText;
 
 public class STBlockController extends CottonCraftingController {
-    private final int maxRows = 6;
+    private final int slotHeight = 18;
+    private final int maxRows = UnifiedStorage.MAX_ROWS;
     private final int slotsWide = UnifiedStorage.ROW_LENGTH;
-    private final int titleY = 0;
-    private final int scrollInvY = titleY + 1;
-    private final int playerInvY = titleY + maxRows + 2;
     private final WScrollInv wScrollInv;
     public final BlockContext context;
+    private final int invSize;
 
-    public STBlockController(int syncId, PlayerInventory playerInventory, BlockContext context, int invSize) {
+    public STBlockController(int syncId, PlayerInventory playerInventory, BlockContext context, int invSize, boolean mergedInventory) {
         super(RecipeType.SMELTING, syncId, playerInventory,
-                new MergedInventories(((STBlockEntity) getBlockInventory(context)).getAllConnectedInventories(), invSize),
+                mergedInventory ? new MergedInventories(((STBlockEntity) getBlockInventory(context)).getAllConnectedInventories(), invSize) : ((STBlockEntity) getBlockInventory(context)),
                 getBlockPropertyDelegate(context));
         this.context = context;
+        this.invSize = invSize;
+        int titleY = 0;
+        int scrollInvY = titleY + 11;
+        int rows = invSize / slotsWide;
+        int playerInvY = titleY + Math.min(rows, maxRows) * 18 + (24);
         blockInventory.onInvOpen(playerInventory.player);
 
-        WGridPanel root = new WGridPanel();
+        // Root
+        WPlainPanel root = new WPlainPanel() {
+            @Override
+            public void onClick(int x, int y, int button) {
+                requestFocus();
+                super.onClick(x, y, button);
+            }
+
+            @Override
+            public boolean canFocus() {
+                return true;
+            }
+        };
         setRootPanel(root);
 
         // Title
@@ -44,10 +61,16 @@ public class STBlockController extends CottonCraftingController {
         root.add(this.wScrollInv, 0, scrollInvY);
 
         // Player Inventory and Hotbar
-        root.add(this.createPlayerInventoryPanel(), 0, playerInvY);
+        WDynamicLabel playerInvTitle = new WDynamicLabel(() -> new TranslatableText("container.inventory").asString());
+        WScrollInv_ItemSlot playerPanel = WScrollInv_ItemSlot.ofPlayerStorage(playerInventory);
+        playerPanel.setSize(3 * slotHeight, 9 * slotHeight);
+        WScrollInv_ItemSlot playerHotbar = WScrollInv_ItemSlot.of(playerInventory, 0, 9, 1);
+        playerHotbar.setSize(slotHeight, 9 * slotHeight);
+        root.add(playerInvTitle, 0, playerInvY - 11);
+        root.add(playerPanel, 0, playerInvY);
+        root.add(playerHotbar, 0, playerInvY + 58);
 
-        if (!this.world.isClient())
-            root.validate(this);
+        root.validate(this);
     }
 
 
@@ -67,12 +90,7 @@ public class STBlockController extends CottonCraftingController {
         blockInventory.onInvClose(player);
     }
 
-    @Override
-    public ItemStack onSlotClick(int slotNumber, int button, SlotActionType action, PlayerEntity player) {
-        return super.onSlotClick(slotNumber, button, action, player);
-    }
-
-    public STBlockEntity getInventory() {
-        return ((STBlockEntity) getBlockInventory(context));
+    public Inventory getInventory() {
+        return getBlockInventory(context);
     }
 }

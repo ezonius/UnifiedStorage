@@ -1,11 +1,12 @@
 package ezonius.unifiedstorage.widgets;
 
+import ezonius.unifiedstorage.block.entity.STBlockEntity;
 import ezonius.unifiedstorage.inventory.MergedInventories;
 import ezonius.unifiedstorage.misc.SlotAccessor;
 import io.github.cottonmc.cotton.gui.CottonCraftingController;
 import io.github.cottonmc.cotton.gui.ValidatedSlot;
 import io.github.cottonmc.cotton.gui.client.BackgroundPainter;
-import io.github.cottonmc.cotton.gui.widget.WGridPanel;
+import io.github.cottonmc.cotton.gui.widget.WPlainPanel;
 import io.github.cottonmc.cotton.gui.widget.data.Axis;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
@@ -15,17 +16,17 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class WScrollInv extends WGridPanel {
+public class WScrollInv extends WPlainPanel {
     private final int maxRows;
     private final CottonCraftingController hostController;
     private final int slotsWide;
     private final int rows;
     private final int scrollSize;
-    final WScrollInv_ScrollBar scrollbar;
+    WScrollInv_ScrollBar scrollbar;
     final WScrollInv_TextField searchField;
     private final Inventory blockInventory;
-    private ArrayList<Integer> unsortedToSortedSlotMap = new ArrayList<>();
-    private HashMap<Integer, Integer> sortedSlotMap = new HashMap<>();
+    private final ArrayList<Integer> unsortedToSortedSlotMap = new ArrayList<>();
+    private final HashMap<Integer, Integer> sortedSlotMap = new HashMap<>();
 
     public WScrollInv(Inventory blockInventory, int slotsWide, int maxRows, CottonCraftingController hostController) {
         this.blockInventory = blockInventory;
@@ -39,22 +40,23 @@ public class WScrollInv extends WGridPanel {
         }
 
         // Container Inventory
-        var visibleSlots = new WScrollInv_ItemSlot(this.blockInventory, 0, this.slotsWide, Math.min(rows, maxRows), false, false);
+        WScrollInv_ItemSlot visibleSlots = new WScrollInv_ItemSlot(this.blockInventory, 0, this.slotsWide, Math.min(rows, maxRows), false, false);
+        visibleSlots.setSize(this.slotsWide * 18, this.maxRows * 18);
         this.add(visibleSlots, 0, 0);
         if (rows > maxRows) {
-            var invisibleSlots = new WScrollInv_ItemSlot(this.blockInventory, this.slotsWide * maxRows, this.slotsWide,
+            WScrollInv_ItemSlot invisibleSlots = new WScrollInv_ItemSlot(this.blockInventory, this.slotsWide * maxRows, this.slotsWide,
                     (this.rows) - this.maxRows, false, false);
             invisibleSlots.setShouldExpandToFit(false);
-            this.add(invisibleSlots, 0, 2000);
+            this.add(invisibleSlots, 0, 3000);
         }
 
         // Scroll Bar
         this.scrollbar = new WScrollInv_ScrollBar(Axis.VERTICAL);
-        this.scrollbar.setSize(8, 18 * this.maxRows);
+        this.scrollbar.setSize(15, 18 * Math.min(rows, maxRows));
         this.scrollbar.setWindow(1);
         this.scrollbar.setMaxValue(scrollSize);
-        this.scrollbar.setLocation(18, 18);
-        this.add(this.scrollbar, this.slotsWide, 0);
+        this.scrollbar.setLocation(this.slotsWide * 18, 0);
+        this.add(this.scrollbar, this.slotsWide * 18, 0);
 
         // Search Field
         this.searchField = new WScrollInv_TextField(new TranslatableText("itemGroup.search"));
@@ -65,10 +67,9 @@ public class WScrollInv extends WGridPanel {
         this.searchField.setDrawFocusBorder(false);
         this.searchField.setDrawTextWithShadow(false);
         this.searchField.setBackgroundPainter(BackgroundPainter.SLOT);
-        this.searchField.setSize(5 * 18 - 2, 10);
+        this.searchField.setSize(5 * 18 - 2, 9);
         this.searchField.setResize(false);
-
-        this.add(this.searchField, 0, maxRows);
+        this.add(this.searchField, 4 * 18, Math.min(rows, maxRows) * 18 + 1);
     }
 
     @Override
@@ -78,7 +79,7 @@ public class WScrollInv extends WGridPanel {
 
     @Override
     public void onMouseScroll(int x, int y, double amount) {
-        if (isWithinBounds(x, y))
+        if (scrollbar != null && isWithinBounds(x, y))
             scrollbar.setValue((int) (scrollbar.getValue() - amount));
         super.onMouseScroll(x, y, amount);
     }
@@ -91,7 +92,7 @@ public class WScrollInv extends WGridPanel {
     protected void repositionScrollInvSlots(int scrollValue) {
         for (int slotsIndex = 0; slotsIndex < hostController.slots.size(); slotsIndex++) {
             ValidatedSlot entry = (ValidatedSlot) hostController.slots.get(slotsIndex);
-            if (!(entry.inventory instanceof MergedInventories))
+            if (!(entry.inventory instanceof MergedInventories || entry.inventory instanceof STBlockEntity))
                 continue;
             int targetIndex = this.searchField.getText().isEmpty() ? entry.getInventoryIndex() :
                     sortedSlotMap.get(entry.getInventoryIndex());
@@ -106,8 +107,8 @@ public class WScrollInv extends WGridPanel {
      * @param targetSlot the index of the target slot
      */
     protected void repositionSlot(int scrollValue, int slotsIndex, int targetSlot) {
-        var x = (targetSlot % this.slotsWide);
-        var y = Math.abs(targetSlot / this.slotsWide);
+        int x = (targetSlot % this.slotsWide);
+        int y = Math.abs(targetSlot / this.slotsWide);
         final SlotAccessor accessor = (SlotAccessor) hostController.slots.get(slotsIndex);
         accessor.setX(x * 18);
         accessor.setY(y >= scrollValue && y < scrollValue + this.maxRows ? (y - scrollValue) * 18 + getY() : 3000);
@@ -168,13 +169,24 @@ public class WScrollInv extends WGridPanel {
      * @return max scroll value
      */
     private int computeMaxScrollValue(Inventory inventory, int slotsWide) {
-        return Math.max(this.computeRows(inventory, slotsWide) - maxRows + 1, 0);
+        return Math.max(this.computeRows(inventory, slotsWide) - maxRows + 1, 1);
     }
 
     @Override
     public void onKeyPressed(int ch, int key, int modifiers) {
         super.onKeyPressed(ch, key, modifiers);
 
+    }
+
+    @Override
+    public void onClick(int x, int y, int button) {
+        requestFocus();
+        super.onClick(x, y, button);
+    }
+
+    @Override
+    public boolean canFocus() {
+        return true;
     }
 
 

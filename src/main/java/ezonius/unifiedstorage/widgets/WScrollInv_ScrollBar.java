@@ -96,10 +96,21 @@ public class WScrollInv_ScrollBar extends WScrollBar {
 
     @Override
     public WScrollBar setValue(int value) {
-        var ret = super.setValue(value);
+        WScrollBar ret = super.setValue(value);
         if (this.parent instanceof WScrollInv) {
             ((WScrollInv) this.parent).repositionScrollInvSlots(this.getValue());
         }
         return ret;
+    }
+
+    @Override
+    public boolean canFocus() {
+        return true;
+    }
+
+    @Override
+    public void onClick(int x, int y, int button) {
+        requestFocus();
+        super.onClick(x, y, button);
     }
 }

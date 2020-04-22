@@ -22,12 +22,14 @@ public class STModuleClient implements InitModule {
     @Environment(EnvType.CLIENT)
     public void initClient() {
         RegisterScreen(UnifiedStorage.ST_BLOCKID_WOOD, UnifiedStorage.ST_BLOCK_WOOD_INVSIZE);
+        RegisterScreen(UnifiedStorage.ST_BLOCKID_IRON, UnifiedStorage.ST_BLOCK_IRON_INVSIZE);
+        RegisterScreen(UnifiedStorage.ST_BLOCKID_DIAMOND, UnifiedStorage.ST_BLOCK_DIAMOND_INVSIZE);
     }
 
     public static void RegisterScreen(Identifier blockId, int invSize) {
         ScreenProviderRegistry.INSTANCE.registerFactory(blockId,
                 (i, identifier, player, packetByteBuf) -> new STScreen(new STBlockController(i,
                         player.inventory,
-                        BlockContext.create(player.world, packetByteBuf.readBlockPos()), invSize), player));
+                        BlockContext.create(player.world, packetByteBuf.readBlockPos()), invSize, false), player));
     }
 }

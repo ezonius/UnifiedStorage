@@ -30,7 +30,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class STBlockEntity extends LootableContainerBlockEntity {
+public class STBlockEntity extends LootableContainerBlockEntity implements Inventory {
 
     private DefaultedList<ItemStack> inventory;
     private int viewerCount;
@@ -38,7 +38,7 @@ public class STBlockEntity extends LootableContainerBlockEntity {
     public int invSize;
 
     public STBlockEntity(Block block, int invSize) {
-        super(STModule.ST_BLOCK_ENTITY_TYPE);
+        super(STModule.ST_BLOCK_ENTITY_TYPES.get(block));
         this.block = block;
         this.invSize = invSize;
         this.inventory = DefaultedList.ofSize(this.invSize, ItemStack.EMPTY);
@@ -67,17 +67,13 @@ public class STBlockEntity extends LootableContainerBlockEntity {
 
     }
 
-    public DefaultedList<ItemStack> getItems() {
-        return inventory;
-    }
-
     @Override
     public int getInvSize() {
-        return inventory.size();
+        return this.invSize;
     }
 
     private Stream<STBlockEntity> getAdjacentInventories() {
-        var adjacentEntities = new ArrayList<BlockEntity>();
+        ArrayList<BlockEntity> adjacentEntities = new ArrayList<>();
         if (this.world != null) {
             adjacentEntities.add(this.world.getBlockEntity(this.pos.down()));
             adjacentEntities.add(this.world.getBlockEntity(this.pos.up()));
@@ -94,7 +90,7 @@ public class STBlockEntity extends LootableContainerBlockEntity {
 
     public Stream<STBlockEntity> getRecursiveAdjacentEntities(HashSet<STBlockEntity> checkList) {
         HashSet<STBlockEntity> finalCheckList = Objects.requireNonNullElseGet(checkList, HashSet::new);
-        var filteredAdjacent = getAdjacentInventories()
+        Stream<STBlockEntity> filteredAdjacent = getAdjacentInventories()
                 .filter(entry -> {
                     if (!finalCheckList.contains(entry)) {
                         finalCheckList.add(entry);

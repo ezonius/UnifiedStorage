@@ -4,7 +4,6 @@ import ezonius.unifiedstorage.block.STBlock;
 import net.fabricmc.fabric.api.block.FabricBlockSettings;
 import net.minecraft.block.Block;
 import net.minecraft.block.Material;
-import net.minecraft.client.util.ModelIdentifier;
 import net.minecraft.util.Identifier;
 
 import java.util.ArrayList;
@@ -14,6 +13,7 @@ public class UnifiedStorage {
     public static String MODNAME = "unifiedstorage";
     public static int MAX_STACK_SIZE = 64;
     public static int ROW_LENGTH = 9;
+    public static int MAX_ROWS = 6;
     public static String ST_BLOCK_ID = "storageterminal";
 
     // Block Identifiers
@@ -24,7 +24,7 @@ public class UnifiedStorage {
     public static Identifier ST_BLOCKID_EMERALD = UnifiedStorage.ModIdentifier(ST_BLOCK_ID + "_emerald");
 
     // Inventory Sizes
-    public static final int ST_BLOCK_WOOD_INVSIZE = 12 * ROW_LENGTH;
+    public static final int ST_BLOCK_WOOD_INVSIZE = 3 * ROW_LENGTH;
     public static final int ST_BLOCK_IRON_INVSIZE = 6 * ROW_LENGTH;
     public static final int ST_BLOCK_GOLD_INVSIZE = 9 * ROW_LENGTH;
     public static final int ST_BLOCK_DIAMOND_INVSIZE = 12 * ROW_LENGTH;

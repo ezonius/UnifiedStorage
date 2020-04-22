@@ -18,9 +18,13 @@ public class WScrollInv_TextField extends WTextField {
     public void setText(String s) {
         super.setText(s);
         if (this.parent instanceof WScrollInv) {
-            var parent = ((WScrollInv) this.parent);
+            WScrollInv parent = ((WScrollInv) this.parent);
             parent.mapSlotsToSorted();
-            parent.scrollbar.setValue(0);
+            if (parent.scrollbar != null) {
+                parent.scrollbar.setValue(0);
+            } else {
+                parent.repositionScrollInvSlots(0);
+            }
         }
     }
 }

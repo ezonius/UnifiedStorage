@@ -1,21 +1,19 @@
 package ezonius.unifiedstorage.inventory;
 
 import ezonius.unifiedstorage.UnifiedStorage;
-import ezonius.unifiedstorage.block.STBlock;
 import ezonius.unifiedstorage.block.entity.STBlockEntity;
-import ezonius.unifiedstorage.modules.STModule;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.LootableContainerBlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.Inventory;
+import net.minecraft.inventory.SidedInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Pair;
+import net.minecraft.util.math.Direction;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.stream.Collectors;
 
-public class MergedInventories implements Inventory {
+public class MergedInventories implements SidedInventory {
 
     private final ArrayList<STBlockEntity> inventory;
     private final int invSize;
@@ -25,7 +23,7 @@ public class MergedInventories implements Inventory {
         this.inventory = collect;
         this.invSize = collect.stream().map(STBlockEntity::getInvSize).reduce(Integer::sum).orElse(invSize);
         this.invSlotMap = new HashMap<>();
-        var slot = 0;
+        int slot = 0;
         for (int i = 0; i < inventory.size(); i++) {
             for (int j = 0; j < inventory.get(i).invSize; j++) {
                 invSlotMap.put(slot, new Pair<>(i, j));
@@ -46,25 +44,25 @@ public class MergedInventories implements Inventory {
 
     @Override
     public ItemStack getInvStack(int slot) {
-        var targetSlot = invSlotMap.get(slot);
+        Pair<Integer, Integer> targetSlot = invSlotMap.get(slot);
         return inventory.get(targetSlot.getLeft()).getInvStack(targetSlot.getRight());
     }
 
     @Override
     public ItemStack takeInvStack(int slot, int amount) {
-        var targetSlot = invSlotMap.get(slot);
+        Pair<Integer, Integer> targetSlot = invSlotMap.get(slot);
         return inventory.get(targetSlot.getLeft()).takeInvStack(targetSlot.getRight(), amount);
     }
 
     @Override
     public ItemStack removeInvStack(int slot) {
-        var targetSlot = invSlotMap.get(slot);
+        Pair<Integer, Integer> targetSlot = invSlotMap.get(slot);
         return inventory.get(targetSlot.getLeft()).removeInvStack(targetSlot.getRight());
     }
 
     @Override
     public void setInvStack(int slot, ItemStack stack) {
-        var targetSlot = invSlotMap.get(slot);
+        Pair<Integer, Integer> targetSlot = invSlotMap.get(slot);
         inventory.get(targetSlot.getLeft()).setInvStack(targetSlot.getRight(), stack);
     }
 
@@ -97,7 +95,7 @@ public class MergedInventories implements Inventory {
 
     @Override
     public boolean isValidInvStack(int slot, ItemStack stack) {
-        var targetSlot = invSlotMap.get(slot);
+        Pair<Integer, Integer> targetSlot = invSlotMap.get(slot);
         return inventory.get(targetSlot.getLeft()).isValidInvStack(targetSlot.getRight(), stack);
     }
 
@@ -107,4 +105,25 @@ public class MergedInventories implements Inventory {
     }
 
 
+    @Override
+    public int[] getInvAvailableSlots(Direction side) {
+        for (int i = 0; i < this.invSize; i++) {
+            if (!this.getInvStack(i).isEmpty())
+                return new int[]{i};
+        }
+        return new int[]{};
+    }
+
+    @Override
+    public boolean canInsertInvStack(int slot, ItemStack stack, Direction dir) {
+        ItemStack targetStack = this.getInvStack(slot);
+        return stack.isEmpty() ||
+                (targetStack.getItem() == stack.getItem() &&
+                        targetStack.getCount() + stack.getCount() <= this.getInvMaxStackAmount());
+    }
+
+    @Override
+    public boolean canExtractInvStack(int slot, ItemStack stack, Direction dir) {
+        return !this.getInvStack(slot).isEmpty();
+    }
 }

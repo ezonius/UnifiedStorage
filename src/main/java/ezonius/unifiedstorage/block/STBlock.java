@@ -89,13 +89,16 @@ public class STBlock extends BlockWithEntity {
 
     @Override
     public void onPlaced(World world, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack itemStack) {
+        BlockEntity blockEntity = world.getBlockEntity(pos);
         if (itemStack.hasCustomName()) {
-            BlockEntity blockEntity = world.getBlockEntity(pos);
             if (blockEntity instanceof STBlockEntity) {
                 ((STBlockEntity)blockEntity).setCustomName(itemStack.getName());
             }
         }
-
+//        if (blockEntity instanceof STBlockEntity) {
+//            ((STBlockEntity) blockEntity).getRecursiveAdjacentEntities(((STBlockEntity) blockEntity).asSingletonHashSet())
+//                    .forEach(STBlockEntity::updateConnectedInventories);
+//        }
     }
 
     @Override
