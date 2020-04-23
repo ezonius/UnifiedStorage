@@ -130,6 +130,7 @@ public interface IMergedInventory extends SidedInventory, Nameable {
     @Override
     default boolean canInsertInvStack(int slot, ItemStack stack, Direction dir) {
         ItemStack targetStack = getInvStack(slot);
+
         return targetStack.isEmpty() ||
                 (targetStack.getItem() == stack.getItem() &&
                         targetStack.getCount() + stack.getCount() <= this.getInvMaxStackAmount());

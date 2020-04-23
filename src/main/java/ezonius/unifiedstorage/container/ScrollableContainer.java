@@ -7,6 +7,7 @@ import ezonius.unifiedstorage.widgets.WScrollInv_ItemSlot;
 import io.github.cottonmc.cotton.gui.CottonCraftingController;
 import io.github.cottonmc.cotton.gui.widget.WDynamicLabel;
 import io.github.cottonmc.cotton.gui.widget.WPlainPanel;
+import io.github.cottonmc.cotton.gui.widget.WText;
 import net.minecraft.container.BlockContext;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -18,7 +19,7 @@ public class ScrollableContainer extends CottonCraftingController {
     private final int slotHeight = 18;
     private final int maxRows = UnifiedStorage.MAX_ROWS;
     private final int slotsWide = UnifiedStorage.ROW_LENGTH;
-    private final WScrollInv wScrollInv;
+    private WScrollInv wScrollInv = null;
     public final BlockContext context;
     private final int invSize;
 
@@ -33,7 +34,7 @@ public class ScrollableContainer extends CottonCraftingController {
         int titleY = 0;
         int scrollInvY = titleY + 11;
         int rows = this.invSize / slotsWide;
-        int playerInvY = titleY + Math.min(rows, maxRows) * 18 + (24);
+        int playerInvY = titleY + (Math.min(rows, maxRows) == 0 ? 3 : Math.min(rows, maxRows)) * 18 + (24);
         blockInventory.onInvOpen(playerInventory.player);
 
         // Root
@@ -56,8 +57,14 @@ public class ScrollableContainer extends CottonCraftingController {
         root.add(dynamicLabel, 0, titleY);
 
         // Scrollable Inventory
-        wScrollInv = new WScrollInv(blockInventory, slotsWide, maxRows, this);
-        root.add(this.wScrollInv, 0, scrollInvY);
+        if (this.invSize > 0) {
+            this.wScrollInv = new WScrollInv(blockInventory, slotsWide, maxRows, this);
+            root.add(this.wScrollInv, 0, scrollInvY);
+        } else {
+            WText noInventoryMsg = new WText(new TranslatableText("container.unifiedstorage.storage_terminal_noInv"));
+            noInventoryMsg.setSize(9* 18, 2*18);
+            root.add(noInventoryMsg, 0, scrollInvY + 9, 9* 18, 2 * 18);
+        }
 
         // Player Inventory and Hotbar
         WDynamicLabel playerInvTitle = new WDynamicLabel(() -> new TranslatableText("container.inventory").asString());

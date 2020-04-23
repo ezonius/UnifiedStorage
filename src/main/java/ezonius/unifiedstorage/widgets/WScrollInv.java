@@ -49,6 +49,7 @@ public class WScrollInv extends WPlainPanel {
             this.add(invisibleSlots, 0, 3000);
         }
 
+
         // Scroll Bar
         this.scrollbar = new WScrollInv_ScrollBar(Axis.VERTICAL);
         this.scrollbar.setSize(15, 18 * Math.min(rows, maxRows));
