@@ -1,7 +1,7 @@
 package ezonius.unifiedstorage;
 
 import ezonius.unifiedstorage.block.EnhBarrelBlock;
-import ezonius.unifiedstorage.block.StorageInterfaceBlock;
+import ezonius.unifiedstorage.block.StorageTerminalBlock;
 import net.fabricmc.fabric.api.block.FabricBlockSettings;
 import net.minecraft.block.Block;
 import net.minecraft.block.Material;
@@ -13,7 +13,7 @@ import java.util.Arrays;
 public class UnifiedStorage {
     public static String MODNAME = "unifiedstorage";
     public static String EB_BLOCKID_BASE = "enhanced_barrel";
-    public static String SI_BLOCKID_BASE = "storage_interface";
+    public static String SI_BLOCKID_BASE = "storage_terminal";
     public static int MAX_STACK_SIZE = 64;
     public static int ROW_LENGTH = 9;
     public static int MAX_ROWS = 6;
@@ -39,7 +39,7 @@ public class UnifiedStorage {
     public static final Block EB_BLOCK_GOLD =      new EnhBarrelBlock(FabricBlockSettings.of(Material.METAL).build(), UnifiedStorage.EB_BLOCKID_GOLD, EB_BLOCK_GOLD_INVSIZE);
     public static final Block EB_BLOCK_DIAMOND =   new EnhBarrelBlock(FabricBlockSettings.of(Material.METAL).build(), UnifiedStorage.EB_BLOCKID_DIAMOND, EB_BLOCK_DIAMOND_INVSIZE);
     public static final Block EB_BLOCK_EMERALD =   new EnhBarrelBlock(FabricBlockSettings.of(Material.METAL).build(), UnifiedStorage.EB_BLOCKID_EMERALD, EB_BLOCK_EMERALD_INVSIZE);
-    public static final Block SI_BLOCK =           new StorageInterfaceBlock(FabricBlockSettings.of(Material.METAL).build(), UnifiedStorage.SI_BLOCKID);
+    public static final Block SI_BLOCK =           new StorageTerminalBlock(FabricBlockSettings.of(Material.METAL).build(), UnifiedStorage.SI_BLOCKID);
 
 
     public static Identifier ModIdentifier(String blockId) {

@@ -1,6 +1,6 @@
 package ezonius.unifiedstorage.block.entity;
 
-import ezonius.unifiedstorage.inventory.MergedInventoriesInterface;
+import ezonius.unifiedstorage.inventory.IMergedInventory;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.block.entity.LootableContainerBlockEntity;
 import net.minecraft.container.Container;
@@ -15,12 +15,12 @@ import net.minecraft.world.World;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public abstract class BlockEntityMergedInventory extends LootableContainerBlockEntity implements MergedInventoriesInterface {
+public abstract class BaseMergedInventoryContainerBlockEntity extends LootableContainerBlockEntity implements IMergedInventory {
     private ArrayList<LootableContainerBlockEntity> inventories;
     private int invSize;
     private HashMap<Integer, Pair<Integer, Integer>> invSlotMap;
 
-    public BlockEntityMergedInventory(BlockEntityType<?> type) {
+    public BaseMergedInventoryContainerBlockEntity(BlockEntityType<?> type) {
         super(type);
         UpdateInventories(this.getWorld(), this.getPos());
     }

@@ -1,4 +1,6 @@
 {
-  "block.unifiedstorage.enhanced_barrel": "Storage Terminal",
-  "container.unifiedstorage.enhanced_barrel": "Storage Terminal"
+  "block.unifiedstorage.enhanced_barrel_wood": "Barrel+ Wood",
+  "container.unifiedstorage.enhanced_barrel_wood": "Barrel+ Wood",
+  "block.unifiedstorage.storage_terminal": "Storage Terminal",
+  "container.unifiedstorage.storage_terminal": "Storage Terminal"
 }

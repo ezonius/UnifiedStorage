@@ -1,10 +1,13 @@
 package ezonius.unifiedstorage.modules;
 
 import ezonius.unifiedstorage.UnifiedStorage;
-import ezonius.unifiedstorage.client.gui.screen.ingame.ScrollableContainer;
+import ezonius.unifiedstorage.block.entity.StorageTerminalBlockEntity;
+import ezonius.unifiedstorage.container.ScrollableContainer;
 import ezonius.unifiedstorage.client.gui.screen.ingame.ScrollableScreen;
 import ezonius.unifiedstorage.init.InitModule;
+import net.fabricmc.fabric.api.client.rendereregistry.v1.BlockEntityRendererRegistry;
 import net.fabricmc.fabric.api.client.screen.ScreenProviderRegistry;
+import net.minecraft.client.render.block.entity.ChestBlockEntityRenderer;
 import net.minecraft.container.BlockContext;
 import net.minecraft.util.Identifier;
 

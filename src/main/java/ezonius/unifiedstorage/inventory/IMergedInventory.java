@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-public interface MergedInventoriesInterface extends SidedInventory, Nameable {
+public interface IMergedInventory extends SidedInventory, Nameable {
 
     HashSet<LootableContainerBlockEntity> asSingletonHashSet();
 

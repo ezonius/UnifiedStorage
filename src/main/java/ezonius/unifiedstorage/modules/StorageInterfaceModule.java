@@ -1,10 +1,8 @@
 package ezonius.unifiedstorage.modules;
 
 import ezonius.unifiedstorage.UnifiedStorage;
-import ezonius.unifiedstorage.block.StorageInterfaceBlock;
-import ezonius.unifiedstorage.block.entity.EnhBarrelBlockEntity;
-import ezonius.unifiedstorage.block.entity.StorageInterfaceBlockEntity;
-import ezonius.unifiedstorage.client.gui.screen.ingame.ScrollableContainer;
+import ezonius.unifiedstorage.block.entity.StorageTerminalBlockEntity;
+import ezonius.unifiedstorage.container.ScrollableContainer;
 import ezonius.unifiedstorage.init.InitModule;
 import net.fabricmc.fabric.api.container.ContainerProviderRegistry;
 import net.minecraft.block.Block;
@@ -19,7 +17,7 @@ import net.minecraft.util.registry.Registry;
 import java.util.HashMap;
 
 public class StorageInterfaceModule implements InitModule {
-    public static HashMap<Block, BlockEntityType<StorageInterfaceBlockEntity>> SI_BLOCK_ENTITY_TYPES = new HashMap<>();
+    public static HashMap<Block, BlockEntityType<StorageTerminalBlockEntity>> SI_BLOCK_ENTITY_TYPES = new HashMap<>();
 
     @Override
     public void initCommon() {
@@ -29,7 +27,7 @@ public class StorageInterfaceModule implements InitModule {
     public static void RegisterSIBlock(Identifier blockId, Block block) {
         Registry.register(Registry.BLOCK, blockId, block);
         SI_BLOCK_ENTITY_TYPES.put(block, Registry.register(Registry.BLOCK_ENTITY_TYPE, blockId,
-                BlockEntityType.Builder.create((() -> new StorageInterfaceBlockEntity(block)), block).build(null)));
+                BlockEntityType.Builder.create((() -> new StorageTerminalBlockEntity(block)), block).build(null)));
 
         ContainerProviderRegistry.INSTANCE.registerFactory(blockId,
                 (syncId, identifier, player, packetByteBuf) ->

@@ -2,7 +2,7 @@ package ezonius.unifiedstorage.modules;
 
 import ezonius.unifiedstorage.UnifiedStorage;
 import ezonius.unifiedstorage.block.entity.EnhBarrelBlockEntity;
-import ezonius.unifiedstorage.client.gui.screen.ingame.ScrollableContainer;
+import ezonius.unifiedstorage.container.ScrollableContainer;
 import ezonius.unifiedstorage.init.InitModule;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;

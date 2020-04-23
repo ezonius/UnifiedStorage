@@ -1,9 +1,7 @@
-package ezonius.unifiedstorage.client.gui.screen.ingame;
+package ezonius.unifiedstorage.container;
 
 import ezonius.unifiedstorage.UnifiedStorage;
-import ezonius.unifiedstorage.block.entity.EnhBarrelBlockEntity;
-import ezonius.unifiedstorage.block.entity.StorageInterfaceBlockEntity;
-import ezonius.unifiedstorage.inventory.MergedInventories;
+import ezonius.unifiedstorage.block.entity.StorageTerminalBlockEntity;
 import ezonius.unifiedstorage.widgets.WScrollInv;
 import ezonius.unifiedstorage.widgets.WScrollInv_ItemSlot;
 import io.github.cottonmc.cotton.gui.CottonCraftingController;
@@ -28,8 +26,8 @@ public class ScrollableContainer extends CottonCraftingController {
         super(RecipeType.SMELTING, syncId, playerInventory,
                 getBlockInventory(context),
                 getBlockPropertyDelegate(context));
-        if (this.blockInventory instanceof StorageInterfaceBlockEntity)
-            ((StorageInterfaceBlockEntity) this.blockInventory).UpdateInventories(((StorageInterfaceBlockEntity) this.blockInventory).getWorld(), ((StorageInterfaceBlockEntity) this.blockInventory).getPos());
+        if (this.blockInventory instanceof StorageTerminalBlockEntity)
+            ((StorageTerminalBlockEntity) this.blockInventory).UpdateInventories(((StorageTerminalBlockEntity) this.blockInventory).getWorld(), ((StorageTerminalBlockEntity) this.blockInventory).getPos());
         this.context = context;
         this.invSize = Math.max(this.blockInventory.getInvSize(), 0);
         int titleY = 0;
@@ -54,7 +52,7 @@ public class ScrollableContainer extends CottonCraftingController {
         setRootPanel(root);
 
         // Title
-        WDynamicLabel dynamicLabel = new WDynamicLabel(() -> new TranslatableText("container.unifiedstorage.enhanced_barrel").asString());
+        WDynamicLabel dynamicLabel = new WDynamicLabel(() -> new TranslatableText("container.unifiedstorage.storage_terminal").asString());
         root.add(dynamicLabel, 0, titleY);
 
         // Scrollable Inventory

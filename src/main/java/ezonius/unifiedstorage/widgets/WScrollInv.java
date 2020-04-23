@@ -1,7 +1,5 @@
 package ezonius.unifiedstorage.widgets;
 
-import ezonius.unifiedstorage.block.entity.EnhBarrelBlockEntity;
-import ezonius.unifiedstorage.inventory.MergedInventories;
 import ezonius.unifiedstorage.misc.SlotAccessor;
 import io.github.cottonmc.cotton.gui.CottonCraftingController;
 import io.github.cottonmc.cotton.gui.ValidatedSlot;
@@ -93,7 +91,7 @@ public class WScrollInv extends WPlainPanel {
     protected void repositionScrollInvSlots(int scrollValue) {
         for (int slotsIndex = 0; slotsIndex < hostController.slots.size(); slotsIndex++) {
             ValidatedSlot entry = (ValidatedSlot) hostController.slots.get(slotsIndex);
-            if (!(entry.inventory instanceof LootableContainerBlockEntity || entry.inventory instanceof MergedInventories))
+            if (!(entry.inventory instanceof LootableContainerBlockEntity))
                 continue;
             int targetIndex = this.searchField.getText().isEmpty() ? entry.getInventoryIndex() :
                     sortedSlotMap.get(entry.getInventoryIndex());

@@ -2,7 +2,7 @@ package ezonius.unifiedstorage.block.entity;
 
 import ezonius.unifiedstorage.UnifiedStorage;
 import ezonius.unifiedstorage.block.EnhBarrelBlock;
-import ezonius.unifiedstorage.client.gui.screen.ingame.ScrollableContainer;
+import ezonius.unifiedstorage.container.ScrollableContainer;
 import ezonius.unifiedstorage.modules.EnhBarrelModule;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;

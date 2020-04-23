@@ -1,6 +1,6 @@
 package ezonius.unifiedstorage.misc;
 
-import ezonius.unifiedstorage.block.entity.StorageInterfaceBlockEntity;
+import ezonius.unifiedstorage.block.entity.StorageTerminalBlockEntity;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.DispenserBlockEntity;
 import net.minecraft.block.entity.HopperBlockEntity;
@@ -46,10 +46,10 @@ public class Utils {
                                 Utils.getRecursiveAdjacentEntities(checkList, stBlockEntity.getWorld(), stBlockEntity.getPos())));
     }
 
-    public static Stream<StorageInterfaceBlockEntity> getRecursiveAdjacentStorageInterfaces(HashSet<LootableContainerBlockEntity> checkList, World world, BlockPos pos) {
+    public static Stream<StorageTerminalBlockEntity> getRecursiveAdjacentStorageInterfaces(HashSet<LootableContainerBlockEntity> checkList, World world, BlockPos pos) {
         return Utils.getRecursiveAdjacentEntities(checkList, world, pos)
-                .filter(x -> x instanceof StorageInterfaceBlockEntity)
-                .map(x -> ((StorageInterfaceBlockEntity)x));
+                .filter(x -> x instanceof StorageTerminalBlockEntity)
+                .map(x -> ((StorageTerminalBlockEntity)x));
     }
 
     public static void updateAllLinkedStorageInterfaceBlockEntity(HashSet<LootableContainerBlockEntity> checkList, World world, BlockPos pos) {
