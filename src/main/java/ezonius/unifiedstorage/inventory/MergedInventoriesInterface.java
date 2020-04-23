@@ -37,7 +37,7 @@ public interface MergedInventoriesInterface extends SidedInventory, Nameable {
         return getInventories().stream()
                 .map(LootableContainerBlockEntity::getInvSize)
                 .reduce(Integer::sum)
-                .orElse(this.getInvSize());
+                .orElse(0);
     }
 
     ArrayList<LootableContainerBlockEntity> getInventories();
@@ -122,7 +122,6 @@ public interface MergedInventoriesInterface extends SidedInventory, Nameable {
     default void clear() {
         getInventories().forEach(LootableContainerBlockEntity::clear);
     }
-
 
     @Override
     default int[] getInvAvailableSlots(Direction side) {

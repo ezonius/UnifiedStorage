@@ -26,8 +26,7 @@ public class ScrollableContainer extends CottonCraftingController {
 
     public ScrollableContainer(int syncId, PlayerInventory playerInventory, BlockContext context, int invSize, boolean mergedInventory) {
         super(RecipeType.SMELTING, syncId, playerInventory,
-                //mergedInventory ? new MergedInventories(((EnhBarrelBlockEntity) getBlockInventory(context)).getAllConnectedInventories(), invSize) : getBlockInventory(context),
-                mergedInventory ? new MergedInventories(((EnhBarrelBlockEntity) getBlockInventory(context)).getAllConnectedInventories(), invSize) : getBlockInventory(context),
+                getBlockInventory(context),
                 getBlockPropertyDelegate(context));
         if (this.blockInventory instanceof StorageInterfaceBlockEntity)
             ((StorageInterfaceBlockEntity) this.blockInventory).UpdateInventories(((StorageInterfaceBlockEntity) this.blockInventory).getWorld(), ((StorageInterfaceBlockEntity) this.blockInventory).getPos());

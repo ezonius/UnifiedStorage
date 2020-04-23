@@ -25,9 +25,4 @@ public class StorageInterfaceBlockEntity extends BlockEntityMergedInventory {
     public HashSet<LootableContainerBlockEntity> asSingletonHashSet() {
         return new HashSet<>(Arrays.asList(this));
     }
-
-    @Override
-    public void onInvOpen(PlayerEntity player) {
-        super.onInvOpen(player);
-    }
 }

@@ -6,7 +6,6 @@ import ezonius.unifiedstorage.client.gui.screen.ingame.ScrollableContainer;
 import ezonius.unifiedstorage.modules.EnhBarrelModule;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.LockableContainerBlockEntity;
 import net.minecraft.block.entity.LootableContainerBlockEntity;
 import net.minecraft.container.Container;
@@ -26,9 +25,9 @@ import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.World;
 
-import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Objects;
 
 public class EnhBarrelBlockEntity extends LootableContainerBlockEntity implements Inventory {
 
@@ -42,10 +41,6 @@ public class EnhBarrelBlockEntity extends LootableContainerBlockEntity implement
         this.block = block;
         this.invSize = invSize;
         this.inventory = DefaultedList.ofSize(this.invSize, ItemStack.EMPTY);
-    }
-
-    public HashSet<EnhBarrelBlockEntity> asSingletonHashSet() {
-        return new HashSet<>(Arrays.asList(this));
     }
 
     @Override
@@ -71,49 +66,6 @@ public class EnhBarrelBlockEntity extends LootableContainerBlockEntity implement
         return this.invSize;
     }
 
-    private Stream<EnhBarrelBlockEntity> getAdjacentInventories() {
-        ArrayList<BlockEntity> adjacentEntities = new ArrayList<>();
-        if (this.world != null) {
-            adjacentEntities.add(this.world.getBlockEntity(this.pos.down()));
-            adjacentEntities.add(this.world.getBlockEntity(this.pos.up()));
-            adjacentEntities.add(this.world.getBlockEntity(this.pos.north()));
-            adjacentEntities.add(this.world.getBlockEntity(this.pos.south()));
-            adjacentEntities.add(this.world.getBlockEntity(this.pos.east()));
-            adjacentEntities.add(this.world.getBlockEntity(this.pos.west()));
-        }
-        return adjacentEntities.stream()
-                .filter((entry) -> entry instanceof EnhBarrelBlockEntity)
-                .map(entry -> ((EnhBarrelBlockEntity) entry))
-                .distinct();
-    }
-
-    public Stream<EnhBarrelBlockEntity> getRecursiveAdjacentEntities(HashSet<EnhBarrelBlockEntity> checkList) {
-        Stream<EnhBarrelBlockEntity> filteredAdjacent = getAdjacentInventories()
-                .filter(entry -> {
-                    if (!checkList.contains(entry)) {
-                        checkList.add(entry);
-                        return true;
-                    }
-                    return false;
-                });
-        return Stream.concat(
-                Stream.of(this),
-                filteredAdjacent
-                        .flatMap(stBlockEntity -> stBlockEntity.getRecursiveAdjacentEntities(checkList)));
-    }
-
-    public ArrayList<EnhBarrelBlockEntity> getAllConnectedInventories() {
-        return getRecursiveAdjacentEntities(this.asSingletonHashSet())
-                .collect(Collectors.toCollection(ArrayList::new));
-    }
-
-    public Integer getAllConnectedInvSize() {
-        return getRecursiveAdjacentEntities(this.asSingletonHashSet())
-                .map(EnhBarrelBlockEntity::getInvSize)
-                .reduce(Integer::sum)
-                .orElse(this.getInvSize());
-    }
-
     @Override
     protected DefaultedList<ItemStack> getInvStackList() {
         return this.inventory;
@@ -122,26 +74,6 @@ public class EnhBarrelBlockEntity extends LootableContainerBlockEntity implement
     @Override
     protected void setInvStackList(DefaultedList<ItemStack> list) {
         this.inventory = list;
-    }
-
-    @Override
-    public void setInvStack(int slot, ItemStack stack) {
-        super.setInvStack(slot, stack);
-    }
-
-    @Override
-    public ItemStack takeInvStack(int slot, int amount) {
-        return super.takeInvStack(slot, amount);
-    }
-
-    @Override
-    public ItemStack getInvStack(int slot) {
-        return super.getInvStack(slot);
-    }
-
-    @Override
-    public ItemStack removeInvStack(int slot) {
-        return super.removeInvStack(slot);
     }
 
     @Override
@@ -240,16 +172,7 @@ public class EnhBarrelBlockEntity extends LootableContainerBlockEntity implement
     }
 
     @Override
-    public boolean canPlayerUseInv(PlayerEntity player) {
-        return pos.isWithinDistance(player.getBlockPos(), 4.5);
-    }
-
-    @Override
     public int getInvMaxStackAmount() {
         return UnifiedStorage.MAX_STACK_SIZE;
     }
-
-
-
-
 }
