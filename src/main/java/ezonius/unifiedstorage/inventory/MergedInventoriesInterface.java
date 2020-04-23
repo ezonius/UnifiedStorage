@@ -2,6 +2,7 @@ package ezonius.unifiedstorage.inventory;
 
 import ezonius.unifiedstorage.UnifiedStorage;
 import ezonius.unifiedstorage.block.entity.EnhBarrelBlockEntity;
+import ezonius.unifiedstorage.misc.Utils;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.LootableContainerBlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -43,7 +44,7 @@ public interface MergedInventoriesInterface extends SidedInventory, Nameable {
     ArrayList<LootableContainerBlockEntity> getInventories();
     void setInventories(ArrayList<LootableContainerBlockEntity> inventories);
     default ArrayList<LootableContainerBlockEntity> calcInventories(World world, BlockPos pos) {
-        return getRecursiveAdjacentEntities(asSingletonHashSet(), world, pos)
+        return Utils.getRecursiveAdjacentEntities(asSingletonHashSet(), world, pos)
                 .collect(Collectors.toCollection(ArrayList::new));
     }
 
@@ -60,8 +61,6 @@ public interface MergedInventoriesInterface extends SidedInventory, Nameable {
         }
         return invSlotMap;
     }
-
-    Stream<LootableContainerBlockEntity> getRecursiveAdjacentEntities(HashSet<LootableContainerBlockEntity> checkList, World world, BlockPos pos);
 
     @Override
     default boolean isInvEmpty() {

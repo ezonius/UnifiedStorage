@@ -3,6 +3,9 @@
   "package": "ezonius.unifiedstorage.mixins",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
+    "BarrelBlockMixin",
+    "ChestBlockMixin",
+    "ShulkerBoxBlockMixin",
     "SlotMixin"
   ],
   "client": [

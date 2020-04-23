@@ -1,7 +1,8 @@
 package ezonius.unifiedstorage.block.entity;
 
 import ezonius.unifiedstorage.inventory.MergedInventoriesInterface;
-import net.minecraft.block.entity.*;
+import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.block.entity.LootableContainerBlockEntity;
 import net.minecraft.container.Container;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -13,9 +14,6 @@ import net.minecraft.world.World;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public abstract class BlockEntityMergedInventory extends LootableContainerBlockEntity implements MergedInventoriesInterface {
     private ArrayList<LootableContainerBlockEntity> inventories;
@@ -32,45 +30,6 @@ public abstract class BlockEntityMergedInventory extends LootableContainerBlockE
         setInventories(calcInventories(world, pos));
         setInvSize(calcInvSize());
         setInvSlotMap(calcInvSlotMap());
-    }
-
-    public Stream<LootableContainerBlockEntity> getAdjacentInventories(World world, BlockPos pos) {
-        ArrayList<BlockEntity> adjacentEntities = new ArrayList<>();
-        if (world != null) {
-            adjacentEntities.add(world.getBlockEntity(pos.down()));
-            adjacentEntities.add(world.getBlockEntity(pos.up()));
-            adjacentEntities.add(world.getBlockEntity(pos.north()));
-            adjacentEntities.add(world.getBlockEntity(pos.south()));
-            adjacentEntities.add(world.getBlockEntity(pos.east()));
-            adjacentEntities.add(world.getBlockEntity(pos.west()));
-        }
-        ArrayList<LootableContainerBlockEntity> distinct = adjacentEntities.stream()
-                .filter((entry) -> entry instanceof LootableContainerBlockEntity &&
-                        !(entry instanceof HopperBlockEntity || entry instanceof DispenserBlockEntity))
-                .map(entry -> ((LootableContainerBlockEntity) entry))
-                .distinct()
-                .collect(Collectors.toCollection(ArrayList::new));
-        return distinct.stream();
-    }
-
-    @Override
-    public Stream<LootableContainerBlockEntity> getRecursiveAdjacentEntities(HashSet<LootableContainerBlockEntity> checkList, World world, BlockPos pos) {
-        ArrayList<LootableContainerBlockEntity> filteredAdjacent = getAdjacentInventories(world, pos)
-                .filter(entry -> {
-                    if (!checkList.contains(entry)) {
-                        checkList.add(entry);
-                        return true;
-                    }
-                    return false;
-                }).collect(Collectors.toCollection(ArrayList::new));
-        ArrayList<LootableContainerBlockEntity> concat = Stream.concat(
-                filteredAdjacent.stream(),
-                filteredAdjacent.stream()
-                        .flatMap(stBlockEntity -> {
-                            Stream<LootableContainerBlockEntity> recursiveAdjacentEntities = this.getRecursiveAdjacentEntities(checkList, stBlockEntity.getWorld(), stBlockEntity.getPos());
-                            return recursiveAdjacentEntities;
-                        })).collect(Collectors.toCollection(ArrayList::new));
-        return concat.stream();
     }
 
     @Override
@@ -113,10 +72,10 @@ public abstract class BlockEntityMergedInventory extends LootableContainerBlockE
         //getInventories().get(0).onInvClose(player);
     }
 
-
     // **************************************
     // LootableContainerBlockEntity overrides
     // **************************************
+
     @Override
     protected DefaultedList<ItemStack> getInvStackList() {
         DefaultedList<ItemStack> ret = DefaultedList.of();
@@ -142,6 +101,7 @@ public abstract class BlockEntityMergedInventory extends LootableContainerBlockE
     // **************************************
     // Conflicts between LootableContainerBlockEntity and MergedInventoryInterface
     // **************************************
+
     @Override
     public void clear() {
         getInventories().forEach(LootableContainerBlockEntity::clear);
