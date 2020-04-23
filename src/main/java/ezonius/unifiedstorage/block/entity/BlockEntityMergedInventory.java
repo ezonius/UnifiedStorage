@@ -9,11 +9,15 @@ import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DefaultedList;
 import net.minecraft.util.Pair;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import net.minecraft.world.World;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -24,47 +28,57 @@ public abstract class BlockEntityMergedInventory extends LootableContainerBlockE
 
     public BlockEntityMergedInventory(BlockEntityType<?> type) {
         super(type);
-        UpdateInventories();
+        UpdateInventories(this.getWorld(), this.getPos());
     }
 
-    public void UpdateInventories() {
-        setInventories(calcInventories());
+    @Override
+    public void UpdateInventories(World world, BlockPos pos) {
+        setInventories(calcInventories(world, pos));
         setInvSize(calcInvSize());
         setInvSlotMap(calcInvSlotMap());
     }
 
-    public Stream<LootableContainerBlockEntity> getAdjacentInventories() {
+    public Stream<LootableContainerBlockEntity> getAdjacentInventories(World world, BlockPos pos) {
         ArrayList<BlockEntity> adjacentEntities = new ArrayList<>();
-        if (this.world != null) {
-            adjacentEntities.add(this.world.getBlockEntity(this.pos.down()));
-            adjacentEntities.add(this.world.getBlockEntity(this.pos.up()));
-            adjacentEntities.add(this.world.getBlockEntity(this.pos.north()));
-            adjacentEntities.add(this.world.getBlockEntity(this.pos.south()));
-            adjacentEntities.add(this.world.getBlockEntity(this.pos.east()));
-            adjacentEntities.add(this.world.getBlockEntity(this.pos.west()));
+        if (world != null) {
+            adjacentEntities.add(world.getBlockEntity(pos.down()));
+            adjacentEntities.add(world.getBlockEntity(pos.up()));
+            adjacentEntities.add(world.getBlockEntity(pos.north()));
+            adjacentEntities.add(world.getBlockEntity(pos.south()));
+            adjacentEntities.add(world.getBlockEntity(pos.east()));
+            adjacentEntities.add(world.getBlockEntity(pos.west()));
         }
-        return adjacentEntities.stream()
-                .filter((entry) -> entry instanceof BarrelBlockEntity ||
-                                    entry instanceof ChestBlockEntity ||
-                                    entry instanceof ShulkerBoxBlockEntity)
+        ArrayList<LootableContainerBlockEntity> distinct = adjacentEntities.stream()
+                .filter((entry) -> {
+                    boolean b = entry instanceof BarrelBlockEntity ||
+                            entry instanceof ChestBlockEntity ||
+                            entry instanceof ShulkerBoxBlockEntity;
+                    return b;
+                })
                 .map(entry -> ((LootableContainerBlockEntity) entry))
-                .distinct();
+                .distinct()
+                .collect(Collectors.toCollection(ArrayList::new));
+        return distinct.stream();
     }
 
     @Override
-    public Stream<LootableContainerBlockEntity> getRecursiveAdjacentEntities(HashSet<LootableContainerBlockEntity> checkList) {
-        Stream<LootableContainerBlockEntity> filteredAdjacent = getAdjacentInventories()
+    public Stream<LootableContainerBlockEntity> getRecursiveAdjacentEntities(HashSet<LootableContainerBlockEntity> checkList, World world, BlockPos pos) {
+        ArrayList<LootableContainerBlockEntity> filteredAdjacent = getAdjacentInventories(world, pos)
                 .filter(entry -> {
                     if (!checkList.contains(entry)) {
                         checkList.add(entry);
                         return true;
                     }
                     return false;
-                });
-        return Stream.concat(
-                Stream.of(this),
-                filteredAdjacent
-                        .flatMap(stBlockEntity -> ((BlockEntityMergedInventory)stBlockEntity).getRecursiveAdjacentEntities(checkList)));
+                }).collect(Collectors.toCollection(ArrayList::new));
+        ArrayList<LootableContainerBlockEntity> concat = Stream.concat(
+                filteredAdjacent.stream(),
+                filteredAdjacent.stream()
+                        .flatMap(stBlockEntity -> {
+                            Stream<LootableContainerBlockEntity> recursiveAdjacentEntities = this.getRecursiveAdjacentEntities(checkList, stBlockEntity.getWorld(), stBlockEntity.getPos());
+                            return recursiveAdjacentEntities;
+                        })).collect(Collectors.toCollection(ArrayList::new));
+        return concat.stream();
     }
 
 
@@ -162,12 +176,12 @@ public abstract class BlockEntityMergedInventory extends LootableContainerBlockE
 
     @Override
     public void onInvOpen(PlayerEntity player) {
-        getInventories().get(0).onInvOpen(player);
+        //getInventories().get(0).onInvOpen(player);
     }
 
     @Override
     public void onInvClose(PlayerEntity player) {
-        getInventories().get(0).onInvClose(player);
+        //getInventories().get(0).onInvClose(player);
     }
 
     @Override
@@ -190,7 +204,7 @@ public abstract class BlockEntityMergedInventory extends LootableContainerBlockE
     @Override
     public boolean canInsertInvStack(int slot, ItemStack stack, Direction dir) {
         ItemStack targetStack = getInvStack(slot);
-        return stack.isEmpty() ||
+        return targetStack.isEmpty() ||
                 (targetStack.getItem() == stack.getItem() &&
                         targetStack.getCount() + stack.getCount() <= this.getInvMaxStackAmount());
     }

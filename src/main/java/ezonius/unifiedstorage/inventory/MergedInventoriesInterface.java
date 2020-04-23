@@ -1,6 +1,7 @@
 package ezonius.unifiedstorage.inventory;
 
 import ezonius.unifiedstorage.UnifiedStorage;
+import ezonius.unifiedstorage.block.entity.EnhBarrelBlockEntity;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.LootableContainerBlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -14,18 +15,17 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 public interface MergedInventoriesInterface extends SidedInventory, Nameable {
 
-    default void UpdateInventories() {
-        setInventories(calcInventories());
+    HashSet<LootableContainerBlockEntity> asSingletonHashSet();
+
+    default void UpdateInventories(World world, BlockPos pos) {
+        setInventories(calcInventories(world, pos));
         setInvSize(calcInvSize());
         setInvSlotMap(calcInvSlotMap());
     }
@@ -42,8 +42,8 @@ public interface MergedInventoriesInterface extends SidedInventory, Nameable {
 
     ArrayList<LootableContainerBlockEntity> getInventories();
     void setInventories(ArrayList<LootableContainerBlockEntity> inventories);
-    default ArrayList<LootableContainerBlockEntity> calcInventories() {
-        return getRecursiveAdjacentEntities(new HashSet<>())
+    default ArrayList<LootableContainerBlockEntity> calcInventories(World world, BlockPos pos) {
+        return getRecursiveAdjacentEntities(asSingletonHashSet(), world, pos)
                 .collect(Collectors.toCollection(ArrayList::new));
     }
 
@@ -54,14 +54,14 @@ public interface MergedInventoriesInterface extends SidedInventory, Nameable {
         int slot = 0;
         for (int i = 0; i < getInventories().size(); i++) {
             for (int j = 0; j < getInventories().get(i).getInvSize(); j++) {
-                getInvSlotMap().put(slot, new Pair<>(i, j));
+                invSlotMap.put(slot, new Pair<>(i, j));
                 slot++;
             }
         }
         return invSlotMap;
     }
 
-    Stream<LootableContainerBlockEntity> getRecursiveAdjacentEntities(HashSet<LootableContainerBlockEntity> checkList);
+    Stream<LootableContainerBlockEntity> getRecursiveAdjacentEntities(HashSet<LootableContainerBlockEntity> checkList, World world, BlockPos pos);
 
     @Override
     default boolean isInvEmpty() {
@@ -132,7 +132,7 @@ public interface MergedInventoriesInterface extends SidedInventory, Nameable {
     @Override
     default boolean canInsertInvStack(int slot, ItemStack stack, Direction dir) {
         ItemStack targetStack = getInvStack(slot);
-        return stack.isEmpty() ||
+        return targetStack.isEmpty() ||
                 (targetStack.getItem() == stack.getItem() &&
                         targetStack.getCount() + stack.getCount() <= this.getInvMaxStackAmount());
     }

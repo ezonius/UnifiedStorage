@@ -23,7 +23,7 @@ public class EnhBarrelModule implements InitModule {
 
     @Override
     public void initCommon() {
-        RegisterSTBlock(UnifiedStorage.ST_BLOCKID_WOOD, UnifiedStorage.ST_BLOCK_WOOD, UnifiedStorage.ST_BLOCK_WOOD_INVSIZE);
+        RegisterSTBlock(UnifiedStorage.EB_BLOCKID_WOOD, UnifiedStorage.EB_BLOCK_WOOD, UnifiedStorage.EB_BLOCK_WOOD_INVSIZE);
         //RegisterSTBlock(UnifiedStorage.ST_BLOCKID_IRON, UnifiedStorage.ST_BLOCK_IRON, UnifiedStorage.ST_BLOCK_IRON_INVSIZE);
         //RegisterSTBlock(UnifiedStorage.ST_BLOCKID_DIAMOND, UnifiedStorage.ST_BLOCK_DIAMOND, UnifiedStorage.ST_BLOCK_DIAMOND_INVSIZE);
     }

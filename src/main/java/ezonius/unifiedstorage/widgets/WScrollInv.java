@@ -8,6 +8,7 @@ import io.github.cottonmc.cotton.gui.ValidatedSlot;
 import io.github.cottonmc.cotton.gui.client.BackgroundPainter;
 import io.github.cottonmc.cotton.gui.widget.WPlainPanel;
 import io.github.cottonmc.cotton.gui.widget.data.Axis;
+import net.minecraft.block.entity.LootableContainerBlockEntity;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.TranslatableText;
@@ -92,7 +93,7 @@ public class WScrollInv extends WPlainPanel {
     protected void repositionScrollInvSlots(int scrollValue) {
         for (int slotsIndex = 0; slotsIndex < hostController.slots.size(); slotsIndex++) {
             ValidatedSlot entry = (ValidatedSlot) hostController.slots.get(slotsIndex);
-            if (!(entry.inventory instanceof MergedInventories || entry.inventory instanceof EnhBarrelBlockEntity))
+            if (!(entry.inventory instanceof LootableContainerBlockEntity || entry.inventory instanceof MergedInventories))
                 continue;
             int targetIndex = this.searchField.getText().isEmpty() ? entry.getInventoryIndex() :
                     sortedSlotMap.get(entry.getInventoryIndex());

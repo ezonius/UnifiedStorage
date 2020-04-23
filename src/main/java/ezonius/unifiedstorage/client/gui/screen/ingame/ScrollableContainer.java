@@ -2,6 +2,7 @@ package ezonius.unifiedstorage.client.gui.screen.ingame;
 
 import ezonius.unifiedstorage.UnifiedStorage;
 import ezonius.unifiedstorage.block.entity.EnhBarrelBlockEntity;
+import ezonius.unifiedstorage.block.entity.StorageInterfaceBlockEntity;
 import ezonius.unifiedstorage.inventory.MergedInventories;
 import ezonius.unifiedstorage.widgets.WScrollInv;
 import ezonius.unifiedstorage.widgets.WScrollInv_ItemSlot;
@@ -25,13 +26,16 @@ public class ScrollableContainer extends CottonCraftingController {
 
     public ScrollableContainer(int syncId, PlayerInventory playerInventory, BlockContext context, int invSize, boolean mergedInventory) {
         super(RecipeType.SMELTING, syncId, playerInventory,
-                mergedInventory ? new MergedInventories(((EnhBarrelBlockEntity) getBlockInventory(context)).getAllConnectedInventories(), invSize) : ((EnhBarrelBlockEntity) getBlockInventory(context)),
+                //mergedInventory ? new MergedInventories(((EnhBarrelBlockEntity) getBlockInventory(context)).getAllConnectedInventories(), invSize) : getBlockInventory(context),
+                mergedInventory ? new MergedInventories(((EnhBarrelBlockEntity) getBlockInventory(context)).getAllConnectedInventories(), invSize) : getBlockInventory(context),
                 getBlockPropertyDelegate(context));
+        if (this.blockInventory instanceof StorageInterfaceBlockEntity)
+            ((StorageInterfaceBlockEntity) this.blockInventory).UpdateInventories(((StorageInterfaceBlockEntity) this.blockInventory).getWorld(), ((StorageInterfaceBlockEntity) this.blockInventory).getPos());
         this.context = context;
-        this.invSize = invSize;
+        this.invSize = Math.max(this.blockInventory.getInvSize(), 0);
         int titleY = 0;
         int scrollInvY = titleY + 11;
-        int rows = invSize / slotsWide;
+        int rows = this.invSize / slotsWide;
         int playerInvY = titleY + Math.min(rows, maxRows) * 18 + (24);
         blockInventory.onInvOpen(playerInventory.player);
 
