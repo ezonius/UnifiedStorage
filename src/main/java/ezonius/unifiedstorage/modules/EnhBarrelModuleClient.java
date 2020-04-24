@@ -7,7 +7,7 @@ import ezonius.unifiedstorage.init.InitModule;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.client.screen.ScreenProviderRegistry;
-import net.minecraft.screen.ScreenHandlerContext;
+import net.minecraft.container.BlockContext;
 import net.minecraft.util.Identifier;
 
 @Environment(EnvType.CLIENT)
@@ -29,6 +29,6 @@ public class EnhBarrelModuleClient implements InitModule {
         ScreenProviderRegistry.INSTANCE.registerFactory(blockId,
                 (i, identifier, player, packetByteBuf) -> new ScrollableScreen(new ScrollableContainer(i,
                         player.inventory,
-                        ScreenHandlerContext.create(player.world, packetByteBuf.readBlockPos()), invSize, false), player));
+                        BlockContext.create(player.world, packetByteBuf.readBlockPos()), invSize, false), player));
     }
 }

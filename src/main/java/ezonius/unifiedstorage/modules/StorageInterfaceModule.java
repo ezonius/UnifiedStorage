@@ -7,10 +7,10 @@ import ezonius.unifiedstorage.init.InitModule;
 import net.fabricmc.fabric.api.container.ContainerProviderRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.container.BlockContext;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
-import net.minecraft.screen.ScreenHandlerContext;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
@@ -31,7 +31,7 @@ public class StorageInterfaceModule implements InitModule {
 
         ContainerProviderRegistry.INSTANCE.registerFactory(blockId,
                 (syncId, identifier, player, packetByteBuf) ->
-                        new ScrollableContainer(syncId, player.inventory, ScreenHandlerContext.create(player.world, packetByteBuf.readBlockPos()), 0, false));
+                        new ScrollableContainer(syncId, player.inventory, BlockContext.create(player.world, packetByteBuf.readBlockPos()), 0, false));
 
         Registry.register(Registry.ITEM, blockId, new BlockItem(block, new Item.Settings().group(ItemGroup.INVENTORY)));
     }

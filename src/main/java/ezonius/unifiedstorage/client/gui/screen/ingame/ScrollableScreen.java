@@ -6,8 +6,9 @@ import io.github.cottonmc.cotton.gui.client.CottonInventoryScreen;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.widget.AbstractButtonWidget;
+import net.minecraft.container.SlotActionType;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.screen.slot.SlotActionType;
+
 import java.util.Objects;
 
 @Environment(EnvType.CLIENT)
@@ -24,9 +25,9 @@ public class ScrollableScreen extends CottonInventoryScreen<ScrollableContainer>
 
         this.handleHotbarKeyPressed(ch, keyCode);
         if (this.focusedSlot != null && this.focusedSlot.hasStack()) {
-            if (Objects.requireNonNull(this.client).options.keyPickItem.matchesKey(ch, keyCode)) {
+            if (Objects.requireNonNull(this.minecraft).options.keyPickItem.matchesKey(ch, keyCode)) {
                 this.onMouseClick(this.focusedSlot, this.focusedSlot.id, 0, SlotActionType.CLONE);
-            } else if (this.client.options.keyDrop.matchesKey(ch, keyCode)) {
+            } else if (this.minecraft.options.keyDrop.matchesKey(ch, keyCode)) {
                 this.onMouseClick(this.focusedSlot, this.focusedSlot.id, hasControlDown() ? 1 : 0, SlotActionType.THROW);
             }
         }
@@ -43,12 +44,12 @@ public class ScrollableScreen extends CottonInventoryScreen<ScrollableContainer>
         for (int i = 0; i < this.buttons.size(); i++) {
             AbstractButtonWidget button = this.buttons.get(i);
             if (button.getClass().getName().equals("SortButtonWidget")) {
-                button.x = this.x + this.backgroundWidth - 12;
+                button.x = this.x + this.containerWidth - 12;
                 if (i == 0) {
-                    button.y = this.y + backgroundHeight - 83 - (Math.min((this.handler.getInventory().size() / 9), UnifiedStorage.MAX_ROWS) + 1) * 18;
+                    button.y = this.y + containerHeight - 83 - (Math.min((this.container.getInventory().getInvSize() / 9), UnifiedStorage.MAX_ROWS) + 1) * 18;
                 }
                 if (i == 1) {
-                    button.y = this.y + backgroundHeight - 88;
+                    button.y = this.y + containerHeight - 88;
                 }
             }
         }

@@ -31,8 +31,8 @@ dependencies {
     modCompile "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
     // This is a fork of LibGui with some of my changes
-    modCompile "io.github.cottonmc:LibGui:${project.libgui_version}"
-    include "io.github.cottonmc:LibGui:${project.libgui_version}"
+    modCompile "io.github.cottonmc:LibGui:1.8.1+1.15.2-094dc1b12b"
+    include "io.github.cottonmc:LibGui:1.8.1+1.15.2-094dc1b12b"
 
     //modImplementation "net.kyrptonaught:Inventory-Sorter:1.6.4"
     //include "net.kyrptonaught:Inventory-Sorter:1.6.4"

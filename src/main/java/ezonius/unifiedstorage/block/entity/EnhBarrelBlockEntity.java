@@ -8,19 +8,19 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.entity.LockableContainerBlockEntity;
 import net.minecraft.block.entity.LootableContainerBlockEntity;
+import net.minecraft.container.Container;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventories;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.screen.ScreenHandler;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
-import net.minecraft.util.collection.DefaultedList;
+import net.minecraft.util.DefaultedList;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.world.World;
@@ -53,18 +53,16 @@ public class EnhBarrelBlockEntity extends LootableContainerBlockEntity implement
     }
 
     @Override
-    public void fromTag(BlockState state, CompoundTag tag) {
-        super.fromTag(state, tag);
-        this.inventory = DefaultedList.ofSize(this.size(), ItemStack.EMPTY);
+    public void fromTag(CompoundTag tag) {
+        super.fromTag(tag);
+        this.inventory = DefaultedList.ofSize(this.getInvSize(), ItemStack.EMPTY);
         if (!this.deserializeLootTable(tag)) {
             Inventories.fromTag(tag, this.inventory);
         }
     }
-    
-    
 
     @Override
-    public int size() {
+    public int getInvSize() {
         return this.invSize;
     }
 
@@ -84,12 +82,12 @@ public class EnhBarrelBlockEntity extends LootableContainerBlockEntity implement
     }
 
     @Override
-    protected ScreenHandler createContainer(int i, PlayerInventory playerInventory) {
+    protected Container createContainer(int i, PlayerInventory playerInventory) {
         return null;
     }
 
     @Override
-    public void onOpen(PlayerEntity player) {
+    public void onInvOpen(PlayerEntity player) {
         if (!player.isSpectator()) {
             if (this.viewerCount < 0) {
                 this.viewerCount = 0;
@@ -104,11 +102,11 @@ public class EnhBarrelBlockEntity extends LootableContainerBlockEntity implement
             this.scheduleUpdate();
         }
     }
-    
+
     public void scheduleUpdate() {
         Objects.requireNonNull(this.world).getBlockTickScheduler().schedule(this.getPos(), this.getCachedState().getBlock(), 5);
     }
-    
+
     public static int countViewers(World world, LockableContainerBlockEntity container, int ticksOpen, int x, int y) {
         int i = 0;
         float f = 5.0F;
@@ -124,13 +122,13 @@ public class EnhBarrelBlockEntity extends LootableContainerBlockEntity implement
                         return i;
                     }
                     playerEntity = var8.next();
-                } while(!(playerEntity.currentScreenHandler instanceof ScrollableContainer));
-                inventory = ((ScrollableContainer) playerEntity.currentScreenHandler).getInventory();
+                } while(!(playerEntity.container instanceof ScrollableContainer));
+                inventory = ((ScrollableContainer) playerEntity.container).getInventory();
             } while(inventory != container);
             ++i;
         }
     }
-    
+
     public void tick() {
         int i = this.pos.getX();
         int j = this.pos.getY();
@@ -155,7 +153,7 @@ public class EnhBarrelBlockEntity extends LootableContainerBlockEntity implement
     }
 
     @Override
-    public void onClose(PlayerEntity player) {
+    public void onInvClose(PlayerEntity player) {
         if (!player.isSpectator()) {
             --this.viewerCount;
         }
@@ -174,7 +172,7 @@ public class EnhBarrelBlockEntity extends LootableContainerBlockEntity implement
     }
 
     @Override
-    public int getMaxCountPerStack() {
+    public int getInvMaxStackAmount() {
         return UnifiedStorage.MAX_STACK_SIZE;
     }
 }

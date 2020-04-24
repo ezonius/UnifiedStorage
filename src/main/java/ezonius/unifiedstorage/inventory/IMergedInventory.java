@@ -32,11 +32,11 @@ public interface IMergedInventory extends SidedInventory, Nameable {
     }
 
     @Override
-    int size();
+    int getInvSize();
     void setInvSize(int invSize);
     default int calcInvSize() {
         return getInventories().stream()
-                .map(LootableContainerBlockEntity::size)
+                .map(LootableContainerBlockEntity::getInvSize)
                 .reduce(Integer::sum)
                 .orElse(0);
     }
@@ -54,7 +54,7 @@ public interface IMergedInventory extends SidedInventory, Nameable {
         HashMap<Integer, Pair<Integer, Integer>> invSlotMap = new HashMap<>();
         int slot = 0;
         for (int i = 0; i < getInventories().size(); i++) {
-            for (int j = 0; j < getInventories().get(i).size(); j++) {
+            for (int j = 0; j < getInventories().get(i).getInvSize(); j++) {
                 invSlotMap.put(slot, new Pair<>(i, j));
                 slot++;
             }
@@ -63,36 +63,36 @@ public interface IMergedInventory extends SidedInventory, Nameable {
     }
 
     @Override
-    default boolean isEmpty() {
-        return getInventories().stream().allMatch(LootableContainerBlockEntity::isEmpty);
+    default boolean isInvEmpty() {
+        return getInventories().stream().allMatch(LootableContainerBlockEntity::isInvEmpty);
     }
 
     @Override
-    default ItemStack getStack(int slot) {
+    default ItemStack getInvStack(int slot) {
         Pair<Integer, Integer> targetSlot = getInvSlotMap().get(slot);
-        return getInventories().get(targetSlot.getLeft()).getStack(targetSlot.getRight());
+        return getInventories().get(targetSlot.getLeft()).getInvStack(targetSlot.getRight());
     }
 
     @Override
-    default ItemStack removeStack(int slot, int amount) {
+    default ItemStack takeInvStack(int slot, int amount) {
         Pair<Integer, Integer> targetSlot = getInvSlotMap().get(slot);
-        return getInventories().get(targetSlot.getLeft()).removeStack(targetSlot.getRight(), amount);
+        return getInventories().get(targetSlot.getLeft()).takeInvStack(targetSlot.getRight(), amount);
     }
 
     @Override
-    default ItemStack removeStack(int slot) {
+    default ItemStack removeInvStack(int slot) {
         Pair<Integer, Integer> targetSlot = getInvSlotMap().get(slot);
-        return getInventories().get(targetSlot.getLeft()).removeStack(targetSlot.getRight());
+        return getInventories().get(targetSlot.getLeft()).removeInvStack(targetSlot.getRight());
     }
 
     @Override
-    default void setStack(int slot, ItemStack stack) {
+    default void setInvStack(int slot, ItemStack stack) {
         Pair<Integer, Integer> targetSlot = getInvSlotMap().get(slot);
-        getInventories().get(targetSlot.getLeft()).setStack(targetSlot.getRight(), stack);
+        getInventories().get(targetSlot.getLeft()).setInvStack(targetSlot.getRight(), stack);
     }
 
     @Override
-    default int getMaxCountPerStack() {
+    default int getInvMaxStackAmount() {
         return UnifiedStorage.MAX_STACK_SIZE;
     }
 
@@ -102,19 +102,19 @@ public interface IMergedInventory extends SidedInventory, Nameable {
     }
 
     @Override
-    default void onOpen(PlayerEntity player) {
-        getInventories().get(0).onOpen(player);
+    default void onInvOpen(PlayerEntity player) {
+        getInventories().get(0).onInvOpen(player);
     }
 
     @Override
-    default void onClose(PlayerEntity player) {
-        getInventories().get(0).onClose(player);
+    default void onInvClose(PlayerEntity player) {
+        getInventories().get(0).onInvClose(player);
     }
 
     @Override
-    default boolean isValid(int slot, ItemStack stack) {
+    default boolean isValidInvStack(int slot, ItemStack stack) {
         Pair<Integer, Integer> targetSlot = getInvSlotMap().get(slot);
-        return getInventories().get(targetSlot.getLeft()).isValid(targetSlot.getRight(), stack);
+        return getInventories().get(targetSlot.getLeft()).isValidInvStack(targetSlot.getRight(), stack);
     }
 
     @Override
@@ -123,21 +123,21 @@ public interface IMergedInventory extends SidedInventory, Nameable {
     }
 
     @Override
-    default int[] getAvailableSlots(Direction side) {
-        return IntStream.range(0, size()).toArray();
+    default int[] getInvAvailableSlots(Direction side) {
+        return IntStream.range(0, getInvSize()).toArray();
     }
 
     @Override
-    default boolean canInsert(int slot, ItemStack stack, Direction dir) {
-        ItemStack targetStack = getStack(slot);
+    default boolean canInsertInvStack(int slot, ItemStack stack, Direction dir) {
+        ItemStack targetStack = getInvStack(slot);
 
         return targetStack.isEmpty() ||
                 (targetStack.getItem() == stack.getItem() &&
-                        targetStack.getCount() + stack.getCount() <= this.getMaxCountPerStack());
+                        targetStack.getCount() + stack.getCount() <= this.getInvMaxStackAmount());
     }
 
     @Override
-    default boolean canExtract(int slot, ItemStack stack, Direction dir) {
-        return !getStack(slot).isEmpty();
+    default boolean canExtractInvStack(int slot, ItemStack stack, Direction dir) {
+        return !getInvStack(slot).isEmpty();
     }
 }
