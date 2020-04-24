@@ -53,8 +53,8 @@ public class EnhBarrelBlockEntity extends LootableContainerBlockEntity implement
     }
 
     @Override
-    public void fromTag(BlockState state, CompoundTag tag) {
-        super.fromTag(state, tag);
+    public void fromTag(CompoundTag tag) {
+        super.fromTag(tag);
         this.inventory = DefaultedList.ofSize(this.size(), ItemStack.EMPTY);
         if (!this.deserializeLootTable(tag)) {
             Inventories.fromTag(tag, this.inventory);

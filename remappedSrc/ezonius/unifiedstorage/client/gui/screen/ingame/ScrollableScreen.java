@@ -24,9 +24,9 @@ public class ScrollableScreen extends CottonInventoryScreen<ScrollableContainer>
 
         this.handleHotbarKeyPressed(ch, keyCode);
         if (this.focusedSlot != null && this.focusedSlot.hasStack()) {
-            if (Objects.requireNonNull(this.client).options.keyPickItem.matchesKey(ch, keyCode)) {
+            if (Objects.requireNonNull(this.minecraft).options.keyPickItem.matchesKey(ch, keyCode)) {
                 this.onMouseClick(this.focusedSlot, this.focusedSlot.id, 0, SlotActionType.CLONE);
-            } else if (this.client.options.keyDrop.matchesKey(ch, keyCode)) {
+            } else if (this.minecraft.options.keyDrop.matchesKey(ch, keyCode)) {
                 this.onMouseClick(this.focusedSlot, this.focusedSlot.id, hasControlDown() ? 1 : 0, SlotActionType.THROW);
             }
         }

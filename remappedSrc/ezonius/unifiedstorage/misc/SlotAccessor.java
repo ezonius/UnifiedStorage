@@ -24,5 +24,5 @@ public interface SlotAccessor
      */
     void setY(int y);
 
-    int getIndex();
+    int getInvSlot();
 }
