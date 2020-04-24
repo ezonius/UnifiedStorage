@@ -6,6 +6,8 @@ import io.github.cottonmc.cotton.gui.ValidatedSlot;
 import io.github.cottonmc.cotton.gui.client.BackgroundPainter;
 import io.github.cottonmc.cotton.gui.widget.WPlainPanel;
 import io.github.cottonmc.cotton.gui.widget.data.Axis;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.block.entity.LootableContainerBlockEntity;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
@@ -66,7 +68,8 @@ public class WScrollInv extends WPlainPanel {
         this.searchField.setSuggestionColor(Color.darkGray.getRGB());
         this.searchField.setDrawFocusBorder(false);
         this.searchField.setDrawTextWithShadow(false);
-        this.searchField.setBackgroundPainter(BackgroundPainter.SLOT);
+        if (FabricLoader.getInstance().getEnvironmentType().equals(EnvType.CLIENT))
+            this.searchField.setBackgroundPainter(BackgroundPainter.SLOT);
         this.searchField.setSize(5 * 18 - 2, 9);
         this.searchField.setResize(false);
         this.add(this.searchField, 4 * 18, Math.min(rows, maxRows) * 18 + 1);
