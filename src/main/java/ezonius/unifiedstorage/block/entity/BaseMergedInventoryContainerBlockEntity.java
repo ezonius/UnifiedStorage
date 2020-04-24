@@ -3,12 +3,12 @@ package ezonius.unifiedstorage.block.entity;
 import ezonius.unifiedstorage.inventory.IMergedInventory;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.block.entity.LootableContainerBlockEntity;
-import net.minecraft.container.Container;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.DefaultedList;
+import net.minecraft.screen.ScreenHandler;
 import net.minecraft.util.Pair;
+import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -53,7 +53,7 @@ public abstract class BaseMergedInventoryContainerBlockEntity extends LootableCo
     }
 
     @Override
-    public int getInvSize() {
+    public int size() {
         return invSize;
     }
 
@@ -63,12 +63,12 @@ public abstract class BaseMergedInventoryContainerBlockEntity extends LootableCo
     }
 
     @Override
-    public void onInvOpen(PlayerEntity player) {
+    public void onOpen(PlayerEntity player) {
         //getInventories().get(0).onInvOpen(player);
     }
 
     @Override
-    public void onInvClose(PlayerEntity player) {
+    public void onClose(PlayerEntity player) {
         //getInventories().get(0).onInvClose(player);
     }
 
@@ -79,14 +79,14 @@ public abstract class BaseMergedInventoryContainerBlockEntity extends LootableCo
     @Override
     protected DefaultedList<ItemStack> getInvStackList() {
         DefaultedList<ItemStack> ret = DefaultedList.of();
-        for (int i = 0; i < getInvSize(); i++) {
-            ret.add(getInvStack(i));
+        for (int i = 0; i < size(); i++) {
+            ret.add(getStack(i));
         }
         return ret;
     }
 
     @Override
-    protected Container createContainer(int i, PlayerInventory playerInventory) {
+    protected ScreenHandler createContainer(int i, PlayerInventory playerInventory) {
         return null;
     }
 
@@ -94,7 +94,7 @@ public abstract class BaseMergedInventoryContainerBlockEntity extends LootableCo
     protected void setInvStackList(DefaultedList<ItemStack> list) {
         clear();
         for (int i = 0; i < list.size(); i++) {
-            setInvStack(i, list.get(i));
+            setStack(i, list.get(i));
         }
     }
 
@@ -108,31 +108,31 @@ public abstract class BaseMergedInventoryContainerBlockEntity extends LootableCo
     }
 
     @Override
-    public void setInvStack(int slot, ItemStack stack) {
+    public void setStack(int slot, ItemStack stack) {
         Pair<Integer, Integer> targetSlot = getInvSlotMap().get(slot);
-        getInventories().get(targetSlot.getLeft()).setInvStack(targetSlot.getRight(), stack);
+        getInventories().get(targetSlot.getLeft()).setStack(targetSlot.getRight(), stack);
     }
 
     @Override
-    public ItemStack removeInvStack(int slot) {
+    public ItemStack removeStack(int slot) {
         Pair<Integer, Integer> targetSlot = getInvSlotMap().get(slot);
-        return getInventories().get(targetSlot.getLeft()).removeInvStack(targetSlot.getRight());
+        return getInventories().get(targetSlot.getLeft()).removeStack(targetSlot.getRight());
     }
 
     @Override
-    public ItemStack takeInvStack(int slot, int amount) {
+    public ItemStack removeStack(int slot, int amount) {
         Pair<Integer, Integer> targetSlot = getInvSlotMap().get(slot);
-        return getInventories().get(targetSlot.getLeft()).takeInvStack(targetSlot.getRight(), amount);
+        return getInventories().get(targetSlot.getLeft()).removeStack(targetSlot.getRight(), amount);
     }
 
     @Override
-    public ItemStack getInvStack(int slot) {
+    public ItemStack getStack(int slot) {
         Pair<Integer, Integer> targetSlot = getInvSlotMap().get(slot);
-        return getInventories().get(targetSlot.getLeft()).getInvStack(targetSlot.getRight());
+        return getInventories().get(targetSlot.getLeft()).getStack(targetSlot.getRight());
     }
 
     @Override
-    public boolean isInvEmpty() {
-        return getInventories().stream().allMatch(LootableContainerBlockEntity::isInvEmpty);
+    public boolean isEmpty() {
+        return getInventories().stream().allMatch(LootableContainerBlockEntity::isEmpty);
     }
 }

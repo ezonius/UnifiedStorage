@@ -8,7 +8,7 @@ import ezonius.unifiedstorage.init.InitModule;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.BlockEntityRendererRegistry;
 import net.fabricmc.fabric.api.client.screen.ScreenProviderRegistry;
 import net.minecraft.client.render.block.entity.ChestBlockEntityRenderer;
-import net.minecraft.container.BlockContext;
+import net.minecraft.screen.ScreenHandlerContext;
 import net.minecraft.util.Identifier;
 
 public class StorageInterfaceModuleClient implements InitModule {
@@ -25,6 +25,6 @@ public class StorageInterfaceModuleClient implements InitModule {
         ScreenProviderRegistry.INSTANCE.registerFactory(blockId,
                 (i, identifier, player, packetByteBuf) -> new ScrollableScreen(new ScrollableContainer(i,
                         player.inventory,
-                        BlockContext.create(player.world, packetByteBuf.readBlockPos()), invSize, false), player));
+                        ScreenHandlerContext.create(player.world, packetByteBuf.readBlockPos()), invSize, false), player));
     }
 }

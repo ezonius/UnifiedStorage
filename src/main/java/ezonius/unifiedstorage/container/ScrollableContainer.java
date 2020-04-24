@@ -8,11 +8,11 @@ import io.github.cottonmc.cotton.gui.CottonCraftingController;
 import io.github.cottonmc.cotton.gui.widget.WDynamicLabel;
 import io.github.cottonmc.cotton.gui.widget.WPlainPanel;
 import io.github.cottonmc.cotton.gui.widget.WText;
-import net.minecraft.container.BlockContext;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.recipe.RecipeType;
+import net.minecraft.screen.ScreenHandlerContext;
 import net.minecraft.text.TranslatableText;
 
 public class ScrollableContainer extends CottonCraftingController {
@@ -20,22 +20,22 @@ public class ScrollableContainer extends CottonCraftingController {
     private final int maxRows = UnifiedStorage.MAX_ROWS;
     private final int slotsWide = UnifiedStorage.ROW_LENGTH;
     private WScrollInv wScrollInv = null;
-    public final BlockContext context;
+    public final ScreenHandlerContext context;
     private final int invSize;
 
-    public ScrollableContainer(int syncId, PlayerInventory playerInventory, BlockContext context, int invSize, boolean mergedInventory) {
+    public ScrollableContainer(int syncId, PlayerInventory playerInventory, ScreenHandlerContext context, int invSize, boolean mergedInventory) {
         super(RecipeType.SMELTING, syncId, playerInventory,
                 getBlockInventory(context),
                 getBlockPropertyDelegate(context));
         if (this.blockInventory instanceof StorageTerminalBlockEntity)
             ((StorageTerminalBlockEntity) this.blockInventory).UpdateInventories(((StorageTerminalBlockEntity) this.blockInventory).getWorld(), ((StorageTerminalBlockEntity) this.blockInventory).getPos());
         this.context = context;
-        this.invSize = Math.max(this.blockInventory.getInvSize(), 0);
+        this.invSize = Math.max(this.blockInventory.size(), 0);
         int titleY = 0;
         int scrollInvY = titleY + 11;
         int rows = this.invSize / slotsWide;
         int playerInvY = titleY + (Math.min(rows, maxRows) == 0 ? 3 : Math.min(rows, maxRows)) * 18 + (24);
-        blockInventory.onInvOpen(playerInventory.player);
+        blockInventory.onOpen(playerInventory.player);
 
         // Root
         WPlainPanel root = new WPlainPanel() {
@@ -81,19 +81,19 @@ public class ScrollableContainer extends CottonCraftingController {
 
 
     private int getRows(Inventory inventory, int slotsWide) {
-        int slotsHigh = inventory.getInvSize() / slotsWide;
+        int slotsHigh = inventory.size() / slotsWide;
         return Math.min(slotsHigh, maxRows);
     }
 
     private int getScrollSize(Inventory inventory, int slotsWide) {
-        int slotsHigh = (inventory.getInvSize() / slotsWide) + 1;
+        int slotsHigh = (inventory.size() / slotsWide) + 1;
         return slotsHigh - maxRows > 0 ? slotsHigh : 0;
     }
 
     @Override
     public void close(PlayerEntity player) {
         super.close(player);
-        blockInventory.onInvClose(player);
+        blockInventory.onClose(player);
     }
 
     public Inventory getInventory() {

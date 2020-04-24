@@ -81,9 +81,4 @@ public class StorageTerminalBlock extends BlockWithEntity {
             world.addParticle(ParticleTypes.PORTAL, d, e, f, g, h, l);
         }
     }
-
-    @Override
-    public int getLuminance(BlockState state) {
-        return super.getLuminance(state);
-    }
 }

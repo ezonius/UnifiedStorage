@@ -9,10 +9,10 @@ import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.container.ContainerProviderRegistry;
 import net.minecraft.block.Block;
 import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.container.BlockContext;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
+import net.minecraft.screen.ScreenHandlerContext;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
@@ -34,7 +34,7 @@ public class EnhBarrelModule implements InitModule {
                 BlockEntityType.Builder.create((() -> new EnhBarrelBlockEntity(block, invSize)), block).build(null)));
         ContainerProviderRegistry.INSTANCE.registerFactory(blockId,
                 (syncId, identifier, player, packetByteBuf) ->
-                        new ScrollableContainer(syncId, player.inventory, BlockContext.create(player.world, packetByteBuf.readBlockPos()), invSize, false));
+                        new ScrollableContainer(syncId, player.inventory, ScreenHandlerContext.create(player.world, packetByteBuf.readBlockPos()), invSize, false));
         Registry.register(Registry.ITEM, blockId, new BlockItem(block, new Item.Settings().group(ItemGroup.INVENTORY)));
     }
 

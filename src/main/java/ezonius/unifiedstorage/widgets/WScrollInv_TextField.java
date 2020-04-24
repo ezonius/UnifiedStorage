@@ -8,7 +8,7 @@ public class WScrollInv_TextField extends WTextField {
     public WScrollInv_TextField(Text suggestion) {
         this.suggestion = suggestion.asString();
     }
-
+    
     @Override
     public void onCharTyped(char ch) {
         super.onCharTyped(ch);

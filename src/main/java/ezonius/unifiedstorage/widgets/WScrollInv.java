@@ -34,7 +34,7 @@ public class WScrollInv extends WPlainPanel {
         this.hostController = hostController;
         this.rows = computeRows(this.blockInventory, this.slotsWide);
         this.scrollSize = computeMaxScrollValue(this.blockInventory, this.slotsWide);
-        for (int i = 0; i < blockInventory.getInvSize(); i++) {
+        for (int i = 0; i < blockInventory.size(); i++) {
             unsortedToSortedSlotMap.add(i);
         }
 
@@ -136,8 +136,8 @@ public class WScrollInv extends WPlainPanel {
      */
     protected int compareStackToSearch(Integer a, Integer b) {
         if (a == null || b == null) { return 0; }
-        final ItemStack stack_a = blockInventory.getInvStack(a);
-        final ItemStack stack_b = blockInventory.getInvStack(b);
+        final ItemStack stack_a = blockInventory.getStack(a);
+        final ItemStack stack_b = blockInventory.getStack(b);
         if (stack_a.isEmpty() && !stack_b.isEmpty()) { return 1; }
         if (!stack_a.isEmpty() && stack_b.isEmpty()) { return -1; }
         if (stack_a.isEmpty()) { return 0; }
@@ -159,7 +159,7 @@ public class WScrollInv extends WPlainPanel {
      * @return amount of rows
      */
     private int computeRows(Inventory inventory, int slotsWide) {
-        return inventory.getInvSize() / slotsWide;
+        return inventory.size() / slotsWide;
     }
 
     /**

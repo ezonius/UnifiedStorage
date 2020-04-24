@@ -1,7 +1,6 @@
 package ezonius.unifiedstorage.misc;
 
 import io.github.cottonmc.cotton.gui.ValidatedSlot;
-import net.minecraft.container.Slot;
 
 /**
  * {@link Slot}'s can be casted to {@link SlotAccessor} to allow their xPosition and yPosition to be set.
@@ -25,5 +24,5 @@ public interface SlotAccessor
      */
     void setY(int y);
 
-    int getInvSlot();
+    int getIndex();
 }

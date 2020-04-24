@@ -40,7 +40,7 @@ public class UnifiedStorage {
     public static final Block EB_BLOCK_GOLD =      new EnhBarrelBlock(FabricBlockSettings.of(Material.METAL).build(), UnifiedStorage.EB_BLOCKID_GOLD, EB_BLOCK_GOLD_INVSIZE);
     public static final Block EB_BLOCK_DIAMOND =   new EnhBarrelBlock(FabricBlockSettings.of(Material.METAL).build(), UnifiedStorage.EB_BLOCKID_DIAMOND, EB_BLOCK_DIAMOND_INVSIZE);
     public static final Block EB_BLOCK_EMERALD =   new EnhBarrelBlock(FabricBlockSettings.of(Material.METAL).build(), UnifiedStorage.EB_BLOCKID_EMERALD, EB_BLOCK_EMERALD_INVSIZE);
-    public static final Block SI_BLOCK =           new StorageTerminalBlock(FabricBlockSettings.of(Material.GLASS).lightLevel(9).sounds(BlockSoundGroup.GLASS).build(), UnifiedStorage.SI_BLOCKID);
+    public static final Block SI_BLOCK =           new StorageTerminalBlock(FabricBlockSettings.of(Material.GLASS).lightLevel(9).sounds(BlockSoundGroup.GLASS).hardness(1).build(), UnifiedStorage.SI_BLOCKID);
 
 
     public static Identifier ModIdentifier(String blockId) {
