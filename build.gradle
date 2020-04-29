@@ -11,11 +11,11 @@ version = "${project.mod_version}-${project.minecraft_version}"
 group = project.maven_group
 
 repositories {
+    maven { url "http://ezonius.sytes.net/maven" }
     maven {
         name = "CottonMC"
         url = "http://server.bbkr.space:8081/artifactory/libs-release"
     }
-    maven { url "http://ezonius.sytes.net/maven" }
     maven { url 'https://maven.fabricmc.net/io/github/prospector/modmenu/ModMenu/' }
     maven {url 'https://dl.bintray.com/kyrptonaught/kyrptconfig'}
 }

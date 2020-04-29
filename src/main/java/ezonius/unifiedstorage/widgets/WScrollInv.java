@@ -7,6 +7,7 @@ import io.github.cottonmc.cotton.gui.client.BackgroundPainter;
 import io.github.cottonmc.cotton.gui.widget.WPlainPanel;
 import io.github.cottonmc.cotton.gui.widget.data.Axis;
 import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.block.entity.LootableContainerBlockEntity;
 import net.minecraft.inventory.Inventory;
@@ -69,17 +70,20 @@ public class WScrollInv extends WPlainPanel {
         this.searchField.setDrawFocusBorder(false);
         this.searchField.setDrawTextWithShadow(false);
         if (FabricLoader.getInstance().getEnvironmentType().equals(EnvType.CLIENT))
+            //noinspection MethodCallSideOnly
             this.searchField.setBackgroundPainter(BackgroundPainter.SLOT);
         this.searchField.setSize(5 * 18 - 2, 9);
-        this.searchField.setResize(false);
-        this.add(this.searchField, 4 * 18, Math.min(rows, maxRows) * 18 + 1);
+        this.searchField.setCanResize(false);
+        this.add(this.searchField, 4 * 18, Math.min(rows, maxRows) * 18 + 1, 5 * 18 - 2, 9);
     }
 
+    @Environment(EnvType.CLIENT)
     @Override
     public void tick() {
         super.tick();
     }
 
+    @Environment(EnvType.CLIENT)
     @Override
     public void onMouseScroll(int x, int y, double amount) {
         if (scrollbar != null && isWithinBounds(x, y))
@@ -175,12 +179,14 @@ public class WScrollInv extends WPlainPanel {
         return Math.max(this.computeRows(inventory, slotsWide) - maxRows + 1, 1);
     }
 
+    @Environment(EnvType.CLIENT)
     @Override
     public void onKeyPressed(int ch, int key, int modifiers) {
         super.onKeyPressed(ch, key, modifiers);
 
     }
 
+    @Environment(EnvType.CLIENT)
     @Override
     public void onClick(int x, int y, int button) {
         requestFocus();

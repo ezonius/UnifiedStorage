@@ -2,10 +2,13 @@ package ezonius.unifiedstorage.widgets;
 
 import io.github.cottonmc.cotton.gui.GuiDescription;
 import io.github.cottonmc.cotton.gui.widget.WItemSlot;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.inventory.Inventory;
 
 public class WScrollInv_ItemSlot extends WItemSlot {
     private boolean valid = false;
+    private boolean shouldExpandToFit = true;
 
     public WScrollInv_ItemSlot(Inventory inventory, int startIndex, int slotsWide, int slotsHigh, boolean big,
                                boolean ltr) {
@@ -20,11 +23,13 @@ public class WScrollInv_ItemSlot extends WItemSlot {
         return new WScrollInv_ItemSlot(inventory, 9, 9, 3, false, false);
     }
 
+    @Environment(EnvType.CLIENT)
     @Override
     public void onMouseScroll(int x, int y, double amount) {
         this.parent.onMouseScroll(x, y, amount);
     }
 
+    @Environment(EnvType.CLIENT)
     @Override
     public void onClick(int x, int y, int button) {
         requestFocus();
@@ -50,5 +55,14 @@ public class WScrollInv_ItemSlot extends WItemSlot {
 
     public void setValid(boolean valid) {
         this.valid = valid;
+    }
+    
+    @Override
+    public boolean shouldExpandToFit() {
+        return this.shouldExpandToFit;
+    }
+    
+    public void setShouldExpandToFit(boolean shouldExpandToFit) {
+        this.shouldExpandToFit = shouldExpandToFit;
     }
 }

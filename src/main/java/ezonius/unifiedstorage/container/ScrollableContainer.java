@@ -6,8 +6,11 @@ import ezonius.unifiedstorage.widgets.WScrollInv;
 import ezonius.unifiedstorage.widgets.WScrollInv_ItemSlot;
 import io.github.cottonmc.cotton.gui.CottonCraftingController;
 import io.github.cottonmc.cotton.gui.widget.WDynamicLabel;
+import io.github.cottonmc.cotton.gui.widget.WLabel;
 import io.github.cottonmc.cotton.gui.widget.WPlainPanel;
 import io.github.cottonmc.cotton.gui.widget.WText;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventory;
@@ -39,6 +42,7 @@ public class ScrollableContainer extends CottonCraftingController {
 
         // Root
         WPlainPanel root = new WPlainPanel() {
+            @Environment(EnvType.CLIENT)
             @Override
             public void onClick(int x, int y, int button) {
                 requestFocus();
@@ -53,7 +57,7 @@ public class ScrollableContainer extends CottonCraftingController {
         setRootPanel(root);
 
         // Title
-        WDynamicLabel dynamicLabel = new WDynamicLabel(() -> new TranslatableText("container.unifiedstorage.storage_terminal").asString());
+        WLabel dynamicLabel = new WLabel(new TranslatableText("container.unifiedstorage.storage_terminal"));
         root.add(dynamicLabel, 0, titleY);
 
         // Scrollable Inventory
@@ -67,7 +71,7 @@ public class ScrollableContainer extends CottonCraftingController {
         }
 
         // Player Inventory and Hotbar
-        WDynamicLabel playerInvTitle = new WDynamicLabel(() -> new TranslatableText("container.inventory").asString());
+        WLabel playerInvTitle = new WLabel(new TranslatableText("container.inventory"));
         WScrollInv_ItemSlot playerPanel = WScrollInv_ItemSlot.ofPlayerStorage(playerInventory);
         playerPanel.setSize(3 * slotHeight, 9 * slotHeight);
         WScrollInv_ItemSlot playerHotbar = WScrollInv_ItemSlot.of(playerInventory, 0, 9, 1);
