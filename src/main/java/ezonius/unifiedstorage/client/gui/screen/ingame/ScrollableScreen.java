@@ -19,22 +19,6 @@ public class ScrollableScreen extends CottonInventoryScreen<ScrollableContainer>
     }
 
     @Override
-    public boolean keyPressed(int ch, int keyCode, int modifiers) {
-        if (super.keyPressed(ch, keyCode, modifiers))
-            return true;
-
-        this.handleHotbarKeyPressed(ch, keyCode);
-        if (this.focusedSlot != null && this.focusedSlot.hasStack()) {
-            if (Objects.requireNonNull(this.client).options.keyPickItem.matchesKey(ch, keyCode)) {
-                this.onMouseClick(this.focusedSlot, this.focusedSlot.id, 0, SlotActionType.CLONE);
-            } else if (this.client.options.keyDrop.matchesKey(ch, keyCode)) {
-                this.onMouseClick(this.focusedSlot, this.focusedSlot.id, hasControlDown() ? 1 : 0, SlotActionType.THROW);
-            }
-        }
-        return true;
-    }
-
-    @Override
     public void render(MatrixStack matrices, int mouseX, int mouseY, float partialTicks) {
         super.render(matrices, mouseX, mouseY, partialTicks);
         repositionInventorySorterWidget();

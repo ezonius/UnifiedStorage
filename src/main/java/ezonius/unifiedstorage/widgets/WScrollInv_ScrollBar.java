@@ -5,6 +5,8 @@ import io.github.cottonmc.cotton.gui.client.ScreenDrawing;
 import io.github.cottonmc.cotton.gui.widget.WScrollBar;
 import io.github.cottonmc.cotton.gui.widget.WWidget;
 import io.github.cottonmc.cotton.gui.widget.data.Axis;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 
 public class WScrollInv_ScrollBar extends WScrollBar {
 
@@ -107,6 +109,7 @@ public class WScrollInv_ScrollBar extends WScrollBar {
         return true;
     }
 
+    @Environment(EnvType.CLIENT)
     @Override
     public void onClick(int x, int y, int button) {
         requestFocus();

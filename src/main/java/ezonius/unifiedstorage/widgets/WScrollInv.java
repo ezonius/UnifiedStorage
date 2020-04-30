@@ -183,7 +183,6 @@ public class WScrollInv extends WPlainPanel {
     @Override
     public void onKeyPressed(int ch, int key, int modifiers) {
         super.onKeyPressed(ch, key, modifiers);
-
     }
 
     @Environment(EnvType.CLIENT)
