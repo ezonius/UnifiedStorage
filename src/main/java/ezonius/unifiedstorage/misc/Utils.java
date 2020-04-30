@@ -26,7 +26,7 @@ public class Utils {
         }
         return adjacentEntities.stream()
                 .filter((entry) -> entry instanceof LootableContainerBlockEntity)
-                .filter(entry -> !(entry instanceof HopperBlockEntity || entry instanceof DispenserBlockEntity))
+                .filter(entry -> !(entry instanceof HopperBlockEntity || entry instanceof DispenserBlockEntity || entry instanceof StorageTerminalBlockEntity))
                 .map(entry -> ((LootableContainerBlockEntity) entry))
                 .distinct();
     }
