@@ -1,7 +1,7 @@
 package ezonius.unifiedstorage.widgets;
 
+import ezonius.unifiedstorage.container.ScrollableContainer;
 import ezonius.unifiedstorage.misc.SlotAccessor;
-import io.github.cottonmc.cotton.gui.CottonCraftingController;
 import io.github.cottonmc.cotton.gui.ValidatedSlot;
 import io.github.cottonmc.cotton.gui.client.BackgroundPainter;
 import io.github.cottonmc.cotton.gui.widget.WPlainPanel;
@@ -20,7 +20,7 @@ import java.util.HashMap;
 
 public class WScrollInv extends WPlainPanel {
     private final int maxRows;
-    private final CottonCraftingController hostController;
+    private final ScrollableContainer hostController;
     private final int slotsWide;
     private final int rows;
     private final int scrollSize;
@@ -30,7 +30,7 @@ public class WScrollInv extends WPlainPanel {
     private final ArrayList<Integer> unsortedToSortedSlotMap = new ArrayList<>();
     private final HashMap<Integer, Integer> sortedSlotMap = new HashMap<>();
 
-    public WScrollInv(Inventory blockInventory, int slotsWide, int maxRows, CottonCraftingController hostController) {
+    public WScrollInv(Inventory blockInventory, int slotsWide, int maxRows, ScrollableContainer hostController) {
         this.blockInventory = blockInventory;
         this.slotsWide = slotsWide;
         this.maxRows = maxRows;
@@ -47,7 +47,11 @@ public class WScrollInv extends WPlainPanel {
         this.add(visibleSlots, 0, 0);
         if (rows > maxRows) {
             WScrollInv_ItemSlot invisibleSlots = new WScrollInv_ItemSlot(this.blockInventory, this.slotsWide * maxRows, this.slotsWide,
-                    (this.rows) - this.maxRows, false, false);
+                    (this.rows) - this.maxRows, false, false) {
+                @Override
+                public void paintBackground(int x, int y) {
+                }
+            };
             invisibleSlots.setShouldExpandToFit(false);
             this.add(invisibleSlots, 0, 3000);
         }
@@ -196,6 +200,4 @@ public class WScrollInv extends WPlainPanel {
     public boolean canFocus() {
         return true;
     }
-
-
 }

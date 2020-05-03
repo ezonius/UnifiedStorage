@@ -27,7 +27,7 @@ public class ScrollableScreen extends CottonInventoryScreen<ScrollableContainer>
     private void repositionInventorySorterWidget() {
         for (int i = 0; i < this.buttons.size(); i++) {
             AbstractButtonWidget button = this.buttons.get(i);
-            if (button.getClass().getName().equals("SortButtonWidget")) {
+            if (button.getClass().getSimpleName().equals("SortButtonWidget")) {
                 button.x = this.x + this.backgroundWidth - 12;
                 if (i == 0) {
                     button.y = this.y + backgroundHeight - 83 - (Math.min((this.handler.getInventory().size() / 9), UnifiedStorage.MAX_ROWS) + 1) * 18;

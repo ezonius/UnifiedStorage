@@ -5,7 +5,6 @@ import ezonius.unifiedstorage.block.entity.StorageTerminalBlockEntity;
 import ezonius.unifiedstorage.widgets.WScrollInv;
 import ezonius.unifiedstorage.widgets.WScrollInv_ItemSlot;
 import io.github.cottonmc.cotton.gui.CottonCraftingController;
-import io.github.cottonmc.cotton.gui.widget.WDynamicLabel;
 import io.github.cottonmc.cotton.gui.widget.WLabel;
 import io.github.cottonmc.cotton.gui.widget.WPlainPanel;
 import io.github.cottonmc.cotton.gui.widget.WText;
@@ -25,7 +24,7 @@ public class ScrollableContainer extends CottonCraftingController {
     private WScrollInv wScrollInv = null;
     public final ScreenHandlerContext context;
     private final int invSize;
-
+    
     public ScrollableContainer(int syncId, PlayerInventory playerInventory, ScreenHandlerContext context, int invSize, boolean mergedInventory) {
         super(RecipeType.SMELTING, syncId, playerInventory,
                 getBlockInventory(context),

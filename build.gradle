@@ -34,8 +34,8 @@ dependencies {
     modCompile "io.github.cottonmc:LibGui:${project.libgui_version}"
     include "io.github.cottonmc:LibGui:${project.libgui_version}"
 
-    //modImplementation "net.kyrptonaught:Inventory-Sorter:1.6.4"
-    //include "net.kyrptonaught:Inventory-Sorter:1.6.4"
+//    modImplementation "net.kyrptonaught:Inventory-Sorter:1.6.49"
+//    include "net.kyrptonaught:Inventory-Sorter:1.6.49"
 
 }
 

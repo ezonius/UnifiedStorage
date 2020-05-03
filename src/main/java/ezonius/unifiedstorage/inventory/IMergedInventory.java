@@ -1,14 +1,10 @@
 package ezonius.unifiedstorage.inventory;
 
 import ezonius.unifiedstorage.UnifiedStorage;
-import ezonius.unifiedstorage.block.entity.EnhBarrelBlockEntity;
 import ezonius.unifiedstorage.misc.Utils;
-import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.LootableContainerBlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.Inventory;
 import net.minecraft.inventory.SidedInventory;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Nameable;
 import net.minecraft.util.Pair;
@@ -19,7 +15,6 @@ import net.minecraft.world.World;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 public interface IMergedInventory extends SidedInventory, Nameable {
 
@@ -44,7 +39,7 @@ public interface IMergedInventory extends SidedInventory, Nameable {
     ArrayList<LootableContainerBlockEntity> getInventories();
     void setInventories(ArrayList<LootableContainerBlockEntity> inventories);
     default ArrayList<LootableContainerBlockEntity> calcInventories(World world, BlockPos pos) {
-        return Utils.getRecursiveAdjacentEntities(asSingletonHashSet(), world, pos)
+        return Utils.getRecursiveAdjacentEntities(asSingletonHashSet(), world, pos, true)
                 .collect(Collectors.toCollection(ArrayList::new));
     }
 
